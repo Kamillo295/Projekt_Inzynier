@@ -1,4 +1,4 @@
-namespace Kielbasa_abacus.Models
+namespace Projekcik.Models
 {
     public class ErrorViewModel
     {

@@ -1,8 +1,8 @@
 using System.Diagnostics;
-using Kielbasa_abacus.Models;
 using Microsoft.AspNetCore.Mvc;
+using Projekcik.Models;
 
-namespace Kielbasa_abacus.Controllers
+namespace Projekcik.Controllers
 {
     public class HomeController : Controller
     {
