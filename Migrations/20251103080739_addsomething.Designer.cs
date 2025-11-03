@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Projekcik.Entities;
 
@@ -10,9 +11,11 @@ using Projekcik.Entities;
 namespace Projekcik.Migrations
 {
     [DbContext(typeof(AplicationDbContext))]
-    partial class AplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251103080739_addsomething")]
+    partial class addsomething
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -111,42 +114,29 @@ namespace Projekcik.Migrations
                     b.Property<string>("RozmiarKoszulki")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("TeamIdDruzyny")
+                        .HasColumnType("int");
+
                     b.Property<int?>("Wiek")
                         .HasColumnType("int");
 
                     b.HasKey("IdZawodnika");
 
+                    b.HasIndex("TeamIdDruzyny");
+
                     b.ToTable("Zadownicy");
                 });
 
-            modelBuilder.Entity("TeamUsers", b =>
-                {
-                    b.Property<int>("ZawodnicyIdDruzyny")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ZawodnicyIdZawodnika")
-                        .HasColumnType("int");
-
-                    b.HasKey("ZawodnicyIdDruzyny", "ZawodnicyIdZawodnika");
-
-                    b.HasIndex("ZawodnicyIdZawodnika");
-
-                    b.ToTable("TeamUsers");
-                });
-
-            modelBuilder.Entity("TeamUsers", b =>
+            modelBuilder.Entity("Projekcik.Entities.Users", b =>
                 {
                     b.HasOne("Projekcik.Entities.Team", null)
-                        .WithMany()
-                        .HasForeignKey("ZawodnicyIdDruzyny")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .WithMany("IdZwodnika")
+                        .HasForeignKey("TeamIdDruzyny");
+                });
 
-                    b.HasOne("Projekcik.Entities.Users", null)
-                        .WithMany()
-                        .HasForeignKey("ZawodnicyIdZawodnika")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+            modelBuilder.Entity("Projekcik.Entities.Team", b =>
+                {
+                    b.Navigation("IdZwodnika");
                 });
 #pragma warning restore 612, 618
         }

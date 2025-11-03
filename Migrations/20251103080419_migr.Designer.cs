@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Projekcik.Entities;
 
@@ -10,9 +11,11 @@ using Projekcik.Entities;
 namespace Projekcik.Migrations
 {
     [DbContext(typeof(AplicationDbContext))]
-    partial class AplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251103080419_migr")]
+    partial class migr
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -121,15 +124,15 @@ namespace Projekcik.Migrations
 
             modelBuilder.Entity("TeamUsers", b =>
                 {
-                    b.Property<int>("ZawodnicyIdDruzyny")
+                    b.Property<int>("IdDruzyny")
                         .HasColumnType("int");
 
-                    b.Property<int>("ZawodnicyIdZawodnika")
+                    b.Property<int>("IdZwodnikaIdZawodnika")
                         .HasColumnType("int");
 
-                    b.HasKey("ZawodnicyIdDruzyny", "ZawodnicyIdZawodnika");
+                    b.HasKey("IdDruzyny", "IdZwodnikaIdZawodnika");
 
-                    b.HasIndex("ZawodnicyIdZawodnika");
+                    b.HasIndex("IdZwodnikaIdZawodnika");
 
                     b.ToTable("TeamUsers");
                 });
@@ -138,13 +141,13 @@ namespace Projekcik.Migrations
                 {
                     b.HasOne("Projekcik.Entities.Team", null)
                         .WithMany()
-                        .HasForeignKey("ZawodnicyIdDruzyny")
+                        .HasForeignKey("IdDruzyny")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Projekcik.Entities.Users", null)
                         .WithMany()
-                        .HasForeignKey("ZawodnicyIdZawodnika")
+                        .HasForeignKey("IdZwodnikaIdZawodnika")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

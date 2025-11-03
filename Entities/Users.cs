@@ -13,5 +13,6 @@ namespace Projekcik.Entities
         public string? RozmiarKoszulki { get; set; }
         public int? Wiek { get; set; }
         public string? KodPocztowy { get; set; }
+        public ICollection<Team> Zawodnicy { get; set; } = new List<Team>();
     }
 }
