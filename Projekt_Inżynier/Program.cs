@@ -1,4 +1,6 @@
 using Projekcik.Entities;
+using Projekcik.Infrastructure.Persistance;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
