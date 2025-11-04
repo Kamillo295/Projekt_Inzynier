@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Projekcik.Infrastructure.Persistance;
 
@@ -10,9 +11,11 @@ using Projekcik.Infrastructure.Persistance;
 namespace Projekcik.Migrations
 {
     [DbContext(typeof(AplicationDbContext))]
-    partial class AplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251104111140_relationTest")]
+    partial class relationTest
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -46,9 +49,6 @@ namespace Projekcik.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdRobota"));
 
-                    b.Property<int>("CategoriesIdKategorii")
-                        .HasColumnType("int");
-
                     b.Property<int>("IdDruzyny")
                         .HasColumnType("int");
 
@@ -63,8 +63,6 @@ namespace Projekcik.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("IdRobota");
-
-                    b.HasIndex("CategoriesIdKategorii");
 
                     b.HasIndex("TeamIdDruzyny");
 
@@ -149,19 +147,11 @@ namespace Projekcik.Migrations
 
             modelBuilder.Entity("Projekcik.Entities.Robots", b =>
                 {
-                    b.HasOne("Projekcik.Entities.Categories", "Categories")
-                        .WithMany("Roboty")
-                        .HasForeignKey("CategoriesIdKategorii")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("Projekcik.Entities.Team", "Team")
                         .WithMany("Roboty")
                         .HasForeignKey("TeamIdDruzyny")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Categories");
 
                     b.Navigation("Team");
                 });
@@ -179,11 +169,6 @@ namespace Projekcik.Migrations
                         .HasForeignKey("ZawodnicyIdZawodnika")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("Projekcik.Entities.Categories", b =>
-                {
-                    b.Navigation("Roboty");
                 });
 
             modelBuilder.Entity("Projekcik.Entities.Team", b =>

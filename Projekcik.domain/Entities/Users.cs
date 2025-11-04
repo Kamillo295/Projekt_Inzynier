@@ -11,8 +11,8 @@ namespace Projekcik.Entities
         public string Haslo { get; set; } = default;
         public string? Email { get; set; }
         public string? RozmiarKoszulki { get; set; }
-        public int? Wiek { get; set; }
+        public int? Wiek { get; set; }  
         public string? KodPocztowy { get; set; }
-        public ICollection<Team> Zawodnicy { get; set; } = new List<Team>();
+        public ICollection<Team> Druzyny { get; set; } = new List<Team>();
     }
 }

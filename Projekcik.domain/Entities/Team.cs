@@ -10,6 +10,7 @@ namespace Projekcik.Entities
         public string NazwaDruzyny { get; set; } = default;
 
         public ICollection<Users> Zawodnicy { get; set; } = new List<Users>();
+        public ICollection<Robots> Roboty { get; set; } = new List<Robots>();
 
     }
 }
