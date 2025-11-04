@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using Projekcik.Entities;
+using Projekcik.Infrastructure.Persistance;
 
 #nullable disable
 
@@ -116,7 +116,7 @@ namespace Projekcik.Migrations
 
                     b.HasKey("IdZawodnika");
 
-                    b.ToTable("Zadownicy");
+                    b.ToTable("Zawodnicy");
                 });
 
             modelBuilder.Entity("TeamUsers", b =>

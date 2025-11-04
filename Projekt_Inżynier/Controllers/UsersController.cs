@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Projekcik.Entities;
+using Projekcik.Infrastructure.Persistance;
 
 namespace Projekcik.Controllers
 {
@@ -21,7 +22,7 @@ namespace Projekcik.Controllers
         // GET: Users
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Zadownicy.ToListAsync());
+            return View(await _context.Zawodnicy.ToListAsync());
         }
 
         // GET: Users/Details/5
@@ -32,7 +33,7 @@ namespace Projekcik.Controllers
                 return NotFound();
             }
 
-            var users = await _context.Zadownicy
+            var users = await _context.Zawodnicy
                 .FirstOrDefaultAsync(m => m.IdZawodnika == id);
             if (users == null)
             {
@@ -72,7 +73,7 @@ namespace Projekcik.Controllers
                 return NotFound();
             }
 
-            var users = await _context.Zadownicy.FindAsync(id);
+            var users = await _context.Zawodnicy.FindAsync(id);
             if (users == null)
             {
                 return NotFound();
@@ -123,7 +124,7 @@ namespace Projekcik.Controllers
                 return NotFound();
             }
 
-            var users = await _context.Zadownicy
+            var users = await _context.Zawodnicy
                 .FirstOrDefaultAsync(m => m.IdZawodnika == id);
             if (users == null)
             {
@@ -138,10 +139,10 @@ namespace Projekcik.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var users = await _context.Zadownicy.FindAsync(id);
+            var users = await _context.Zawodnicy.FindAsync(id);
             if (users != null)
             {
-                _context.Zadownicy.Remove(users);
+                _context.Zawodnicy.Remove(users);
             }
 
             await _context.SaveChangesAsync();
@@ -150,7 +151,7 @@ namespace Projekcik.Controllers
 
         private bool UsersExists(int id)
         {
-            return _context.Zadownicy.Any(e => e.IdZawodnika == id);
+            return _context.Zawodnicy.Any(e => e.IdZawodnika == id);
         }
     }
 }

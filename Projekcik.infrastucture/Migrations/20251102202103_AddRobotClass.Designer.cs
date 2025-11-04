@@ -5,6 +5,8 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Projekcik.Entities;
+using Projekcik.Infrastructure.Persistance;
+using Projekcik.Infrastructure.Persistance;
 
 #nullable disable
 
