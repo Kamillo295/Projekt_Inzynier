@@ -1,13 +1,15 @@
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Projekcik.Entities;
 using Projekcik.Infrastructure.Persistance;
+using Projekcik.infrastucture.Extenctions;
 
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
-
-builder.Services.AddDbContext<AplicationDbContext>();
+builder.Services.AddInfrastructure(builder.Configuration);
 
 var app = builder.Build();
 
