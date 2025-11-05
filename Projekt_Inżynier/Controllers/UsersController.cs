@@ -15,12 +15,12 @@ namespace Projekcik.Controllers
     public class UsersController : Controller
     {
         private readonly AplicationDbContext _context;
-        private readonly IMapper _mapper;
-
-        public UsersController(AplicationDbContext context, IMapper mapper)
+        //private readonly IMapper _mapper;
+    
+        public UsersController(AplicationDbContext context)     //tutaj mapowanie dto
         {
             _context = context;
-            _mapper = mapper;
+           // _mapper = mapper;
         }
 
         // GET: Users
@@ -58,19 +58,19 @@ namespace Projekcik.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Projekcik.application.Users.UsersDto usersDto)
+        public async Task<IActionResult> Create(Projekcik.Entities.Users users)
         {
             if (ModelState.IsValid)
             {
-                var users = _mapper.Map<Projekcik.Entities.Users>(usersDto);
-                users.Haslo = BCrypt.Net.BCrypt.HashPassword(usersDto.Haslo);
+               // var users = _mapper.Map<Projekcik.Entities.Users>(usersDto);
+                users.Haslo = BCrypt.Net.BCrypt.HashPassword(users.Haslo);
 
                 _context.Add(users);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
 
-            return View(usersDto);
+            return View(users);
         }
 
         // GET: Users/Edit/5
