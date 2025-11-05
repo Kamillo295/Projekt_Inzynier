@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using Projekcik.application.Mappings;
 using Projekcik.Entities;
 using Projekcik.Infrastructure.Persistance;
 using Projekcik.infrastucture.Extenctions;
@@ -10,6 +11,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddInfrastructure(builder.Configuration);
+builder.Services.AddAutoMapper(typeof(UsersMappingProfile));
 
 var app = builder.Build();
 

@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.CodeAnalysis.Scripting;
 using Microsoft.EntityFrameworkCore;
 using Projekcik.Entities;
 using Projekcik.Infrastructure.Persistance;
@@ -13,10 +15,12 @@ namespace Projekcik.Controllers
     public class UsersController : Controller
     {
         private readonly AplicationDbContext _context;
+        private readonly IMapper _mapper;
 
-        public UsersController(AplicationDbContext context)
+        public UsersController(AplicationDbContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         // GET: Users
@@ -54,15 +58,19 @@ namespace Projekcik.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("IdZawodnika,Imie,Nazwisko,NumerTelefonu,Haslo,Email,RozmiarKoszulki,Wiek,KodPocztowy")] Users users)
+        public async Task<IActionResult> Create(Projekcik.application.Users.UsersDto usersDto)
         {
             if (ModelState.IsValid)
             {
+                var users = _mapper.Map<Projekcik.Entities.Users>(usersDto);
+                users.Haslo = BCrypt.Net.BCrypt.HashPassword(usersDto.Haslo);
+
                 _context.Add(users);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(users);
+
+            return View(usersDto);
         }
 
         // GET: Users/Edit/5
