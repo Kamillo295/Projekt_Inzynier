@@ -15,12 +15,12 @@ namespace Projekcik.Controllers
     public class UsersController : Controller
     {
         private readonly AplicationDbContext _context;
-        //private readonly IMapper _mapper;
+        private readonly IMapper _mapper;
     
-        public UsersController(AplicationDbContext context)     //tutaj mapowanie dto
+        public UsersController(AplicationDbContext context, IMapper mapper)     //tutaj mapowanie dto
         {
             _context = context;
-           // _mapper = mapper;
+            _mapper = mapper;
         }
 
         // GET: Users
