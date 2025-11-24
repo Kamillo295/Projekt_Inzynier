@@ -74,54 +74,60 @@ namespace Projekcik.Controllers
         }
 
         // GET: Users/Edit/5
+        // GET: Users/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
-            var users = await _context.Zawodnicy.FindAsync(id);
-            if (users == null)
-            {
-                return NotFound();
-            }
-            return View(users);
+            // 1. Pobieramy z bazy
+            var userEntity = await _context.Zawodnicy.FindAsync(id);
+            if (userEntity == null) return NotFound();
+
+            // 2. Mapujemy na EditDto (bezpieczne, bez hasła)
+            var editDto = _mapper.Map<Projekcik.application.Users.UserEditDto>(userEntity);
+
+            // 3. Wysyłamy DTO do widoku
+            return View(editDto);
         }
 
         // POST: Users/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // POST: Users/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("IdZawodnika,Imie,Nazwisko,NumerTelefonu,Haslo,Email,RozmiarKoszulki,Wiek,KodPocztowy")] Users users)
+        // Przyjmujemy UserEditDto zamiast Users
+        public async Task<IActionResult> Edit(int id, Projekcik.application.Users.UserEditDto editDto)
         {
-            if (id != users.IdZawodnika)
-            {
-                return NotFound();
-            }
+            if (id != editDto.IdZawodnika) return NotFound();
 
             if (ModelState.IsValid)
             {
                 try
                 {
-                    _context.Update(users);
+                    // 1. Pobierz ORYGINALNEGO użytkownika z bazy (to ważne!)
+                    var userEntity = await _context.Zawodnicy.FindAsync(id);
+                    if (userEntity == null) return NotFound();
+
+                    // 2. Mapuj zmiany: DTO -> Encja
+                    // AutoMapper przepisze tylko imię, nazwisko, telefon itd.
+                    // Pole 'Haslo' w userEntity pozostanie nienaruszone (stare hasło zostaje)!
+                    _mapper.Map(editDto, userEntity);
+
+                    // 3. Zapisz zmiany
+                    _context.Update(userEntity);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!UsersExists(users.IdZawodnika))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    if (!UsersExists(editDto.IdZawodnika)) return NotFound();
+                    else throw;
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(users);
+
+            // Jeśli błąd walidacji, wracamy do widoku z tym samym DTO
+            return View(editDto);
         }
 
         // GET: Users/Delete/5

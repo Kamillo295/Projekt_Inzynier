@@ -13,8 +13,14 @@ namespace Projekcik.application.Mappings
     {
         public UsersMappingProfile()
         {
-            CreateMap<UsersDto, Projekcik.Entities.Users>()
-                .ForMember(e => e.Imie, opt => opt.MapFrom(src => src.Imie)); //samo się robi przez auto mapper dla reszty (to tylko przykład)
+            // Stare mapowanie (do rejestracji/wyświetlania)
+            CreateMap<Projekcik.Entities.Users, Projekcik.application.Users.UsersDto>()
+                .ReverseMap();
+
+            // NOWE mapowanie (do edycji)
+            CreateMap<Projekcik.Entities.Users, Projekcik.application.Users.UserEditDto>()
+                .ReverseMap();
+            // ReverseMap pozwoli nam zamienić Encję -> EditDto przy wejściu na formularz
         }
     }
 }
