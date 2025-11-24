@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.CodeAnalysis.Scripting;
 using Microsoft.EntityFrameworkCore;
+using Projekcik.application.Users;
 using Projekcik.Entities;
 using Projekcik.Infrastructure.Persistance;
 
@@ -58,7 +59,7 @@ namespace Projekcik.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Projekcik.Entities.Users users)
+        public async Task<IActionResult> Create(Projekcik.application.Users.UsersDto users)
         {
             if (ModelState.IsValid)
             {
@@ -73,7 +74,6 @@ namespace Projekcik.Controllers
             return View(users);
         }
 
-        // GET: Users/Edit/5
         // GET: Users/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -146,6 +146,43 @@ namespace Projekcik.Controllers
             }
 
             return View(users);
+        }
+
+        // GET: Wyświetl formularz zmiany hasła
+        public IActionResult ChangePassword(int id)
+        {
+            return View(new ChangePasswordDto { IdZawodnika = id });
+        }
+
+        // POST: Przetwórz zmianę hasła
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ChangePassword(ChangePasswordDto dto)
+        {
+            if (!ModelState.IsValid) return View(dto);
+
+            var user = await _context.Zawodnicy.FindAsync(dto.IdZawodnika);
+            if (user == null) return NotFound();
+
+            // 1. Sprawdź czy STARE hasło pasuje do tego w bazie
+            // BCrypt.Verify(tekstJawny, hashZBazy)
+            bool isPasswordCorrect = BCrypt.Net.BCrypt.Verify(dto.StareHaslo, user.Haslo);
+
+            if (!isPasswordCorrect)
+            {
+                ModelState.AddModelError("StareHaslo", "Błędne aktualne hasło.");
+                return View(dto);
+            }
+
+            // 2. Jeśli stare pasuje, zahaszuj NOWE hasło i nadpisz w bazie
+            user.Haslo = BCrypt.Net.BCrypt.HashPassword(dto.NoweHaslo);
+
+            _context.Update(user);
+            await _context.SaveChangesAsync();
+
+            // Sukces! Przekieruj np. do listy lub szczegółów
+            TempData["Message"] = "Hasło zostało zmienione pomyślnie!";
+            return RedirectToAction(nameof(Details), new { id = dto.IdZawodnika });
         }
 
         // POST: Users/Delete/5
