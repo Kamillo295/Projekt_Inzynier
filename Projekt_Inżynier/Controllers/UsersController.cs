@@ -59,7 +59,7 @@ namespace Projekcik.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Projekcik.application.Users.UsersDto users)
+        public async Task<IActionResult> Create(Projekcik.Entities.Users users)
         {
             if (ModelState.IsValid)
             {
@@ -148,6 +148,26 @@ namespace Projekcik.Controllers
             return View(users);
         }
 
+        // POST: Users/Delete/5
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            var users = await _context.Zawodnicy.FindAsync(id);
+            if (users != null)
+            {
+                _context.Zawodnicy.Remove(users);
+            }
+
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+        }
+
+        private bool UsersExists(int id)
+        {
+            return _context.Zawodnicy.Any(e => e.IdZawodnika == id);
+        }
+
         // GET: Wyświetl formularz zmiany hasła
         public IActionResult ChangePassword(int id)
         {
@@ -170,7 +190,7 @@ namespace Projekcik.Controllers
 
             if (!isPasswordCorrect)
             {
-                ModelState.AddModelError("StareHaslo", "Błędne aktualne hasło.");
+                ModelState.AddModelError("Stare Hasło", "Błędne aktualne hasło.");
                 return View(dto);
             }
 
@@ -183,26 +203,6 @@ namespace Projekcik.Controllers
             // Sukces! Przekieruj np. do listy lub szczegółów
             TempData["Message"] = "Hasło zostało zmienione pomyślnie!";
             return RedirectToAction(nameof(Details), new { id = dto.IdZawodnika });
-        }
-
-        // POST: Users/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var users = await _context.Zawodnicy.FindAsync(id);
-            if (users != null)
-            {
-                _context.Zawodnicy.Remove(users);
-            }
-
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
-
-        private bool UsersExists(int id)
-        {
-            return _context.Zawodnicy.Any(e => e.IdZawodnika == id);
         }
     }
 }
