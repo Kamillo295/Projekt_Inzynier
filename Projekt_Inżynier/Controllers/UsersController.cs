@@ -17,15 +17,19 @@ namespace Projekcik.Controllers
     {
         private readonly AplicationDbContext _dbContext;
         private readonly IMapper _mapper;
-    
-        public UsersController(AplicationDbContext context, IMapper mapper)     //tutaj mapowanie dto
+        private readonly IConfiguration _config;
+        public UsersController(AplicationDbContext context, IMapper mapper, IConfiguration config)     //tutaj mapowanie dto
         {
             _dbContext = context;
             _mapper = mapper;
+            _config = config;
         }
 
+        //public Task<Projekcik.Entities.Users?> GetByName(string name)
+        //=> _dbContext.Users.FirstOrDefaultAsync(cw => cw.Name.ToLower() == name.ToLower());
+
         public Task<Projekcik.Entities.Users?> GetByName(string name)
-        => _dbContext.Users.FirstOrDefaultAsync(cw => cw.Name.ToLower() == name.ToLower());
+        => _dbContext.Zawodnicy.FirstOrDefaultAsync(cw => cw.Imie.ToLower() == name.ToLower());
 
         // GET: Users
         public async Task<IActionResult> Index()
@@ -62,20 +66,44 @@ namespace Projekcik.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Projekcik.application.Users.UsersDto usersDto)
+        public async Task<IActionResult> Create(UsersDto usersDto)
         {
-            if (ModelState.IsValid) 
-            {
-                var users = _mapper.Map<Projekcik.Entities.Users>(usersDto);
-                users.Haslo = BCrypt.Net.BCrypt.HashPassword(users.Haslo);
+            var recaptchaResponse = Request.Form["g-recaptcha-response"];
+            var secretKey = _config["Recaptcha:SecretKey"];
 
-                _dbContext.Add(users);
-                await _dbContext.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+            using var http = new HttpClient();
+            var result = await http.PostAsync(
+                "https://www.google.com/recaptcha/api/siteverify",
+                new FormUrlEncodedContent(new Dictionary<string, string>
+                {
+            { "secret", secretKey },
+            { "response", recaptchaResponse }
+                })
+            );
+
+            var json = await result.Content.ReadAsStringAsync();
+            var captchaResult = System.Text.Json.JsonSerializer.Deserialize<RecaptchaVerifyResponse>(json);
+
+            if (captchaResult == null || !captchaResult.success)
+            {
+                ModelState.AddModelError("", "reCAPTCHA niezweryfikowana. Udowodnij nam, że jesteś człowiekiem 😉");
             }
 
-            return View(usersDto);
+            if (!ModelState.IsValid)
+            {
+                return View(usersDto);
+            }
+
+            var users = _mapper.Map<Users>(usersDto);
+            users.Haslo = BCrypt.Net.BCrypt.HashPassword(users.Haslo);
+
+            _dbContext.Add(users);
+            await _dbContext.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Index));
         }
+
+
 
         // GET: Users/Edit/5
         public async Task<IActionResult> Edit(int? id)

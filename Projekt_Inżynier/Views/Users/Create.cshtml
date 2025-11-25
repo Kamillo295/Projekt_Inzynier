@@ -3,6 +3,9 @@
 @{
     ViewData["Title"] = "Create";
 }
+@inject IConfiguration Config
+
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
 
 <h1>Create</h1>
 
@@ -53,9 +56,13 @@
                 <input asp-for="KodPocztowy" class="form-control" />
                 <span asp-validation-for="KodPocztowy" class="text-danger"></span>
             </div>
+
+            <div class="g-recaptcha" data-sitekey="@Config["Recaptcha:SiteKey"]"></div>
+
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>
+
         </form>
     </div>
 </div>
