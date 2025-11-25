@@ -9,11 +9,21 @@ namespace Projekcik.application.Users
 {
     public class UsersDtoValidator : AbstractValidator<UsersDto>
     {
-        public UsersDtoValidator()
+        public UsersDtoValidator(Projekcik.Entities.Users repository)
         {
             RuleFor(c => c.Imie)
                .NotEmpty().WithMessage("Wpisz imię debilu")
                .EmailAddress().WithMessage("aaaaaaaa");
+
+            RuleFor(c => c.Email)
+                .EmailAddress().WithMessage("email")
+                .Custom((value, context) =>
+                {
+                    var existingUser = repository.GetByName(value);
+                });
+
         }
+
+
     }
 }

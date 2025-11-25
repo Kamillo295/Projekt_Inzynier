@@ -15,6 +15,7 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddAutoMapper(typeof(Projekcik.application.Users.UserEditDto).Assembly);
 
+// ---------------------------------------- Fluent Validation --------------------------------------------
 builder.Services.AddValidatorsFromAssemblyContaining<Projekcik.application.Users.UsersDtoValidator>()
     .AddFluentValidationAutoValidation()
     .AddFluentValidationClientsideAdapters();

@@ -15,19 +15,22 @@ namespace Projekcik.Controllers
 {
     public class UsersController : Controller
     {
-        private readonly AplicationDbContext _context;
+        private readonly AplicationDbContext _dbContext;
         private readonly IMapper _mapper;
     
         public UsersController(AplicationDbContext context, IMapper mapper)     //tutaj mapowanie dto
         {
-            _context = context;
+            _dbContext = context;
             _mapper = mapper;
         }
+
+        public Task<Projekcik.Entities.Users?> GetByName(string name)
+        => _dbContext.Users.FirstOrDefaultAsync(cw => cw.Name.ToLower() == name.ToLower());
 
         // GET: Users
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Zawodnicy.ToListAsync());
+            return View(await _dbContext.Zawodnicy.ToListAsync());
         }
 
         // GET: Users/Details/5
@@ -38,7 +41,7 @@ namespace Projekcik.Controllers
                 return NotFound();
             }
 
-            var users = await _context.Zawodnicy
+            var users = await _dbContext.Zawodnicy
                 .FirstOrDefaultAsync(m => m.IdZawodnika == id);
             if (users == null)
             {
@@ -66,8 +69,8 @@ namespace Projekcik.Controllers
                 var users = _mapper.Map<Projekcik.Entities.Users>(usersDto);
                 users.Haslo = BCrypt.Net.BCrypt.HashPassword(users.Haslo);
 
-                _context.Add(users);
-                await _context.SaveChangesAsync();
+                _dbContext.Add(users);
+                await _dbContext.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
 
@@ -80,7 +83,7 @@ namespace Projekcik.Controllers
             if (id == null) return NotFound();
 
             // 1. Pobieramy z bazy
-            var userEntity = await _context.Zawodnicy.FindAsync(id);
+            var userEntity = await _dbContext.Zawodnicy.FindAsync(id);
             if (userEntity == null) return NotFound();
 
             // 2. Mapujemy na EditDto (bezpieczne, bez hasła)
@@ -106,7 +109,7 @@ namespace Projekcik.Controllers
                 try
                 {
                     // 1. Pobierz ORYGINALNEGO użytkownika z bazy (to ważne!)
-                    var userEntity = await _context.Zawodnicy.FindAsync(id);
+                    var userEntity = await _dbContext.Zawodnicy.FindAsync(id);
                     if (userEntity == null) return NotFound();
 
                     // 2. Mapuj zmiany: DTO -> Encja
@@ -115,8 +118,8 @@ namespace Projekcik.Controllers
                     _mapper.Map(editDto, userEntity);
 
                     // 3. Zapisz zmiany
-                    _context.Update(userEntity);
-                    await _context.SaveChangesAsync();
+                    _dbContext.Update(userEntity);
+                    await _dbContext.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -138,7 +141,7 @@ namespace Projekcik.Controllers
                 return NotFound();
             }
 
-            var users = await _context.Zawodnicy
+            var users = await _dbContext.Zawodnicy
                 .FirstOrDefaultAsync(m => m.IdZawodnika == id);
             if (users == null)
             {
@@ -161,7 +164,7 @@ namespace Projekcik.Controllers
         {
             if (!ModelState.IsValid) return View(dto);
 
-            var user = await _context.Zawodnicy.FindAsync(dto.IdZawodnika);
+            var user = await _dbContext.Zawodnicy.FindAsync(dto.IdZawodnika);
             if (user == null) return NotFound();
 
             // 1. Sprawdź czy STARE hasło pasuje do tego w bazie
@@ -177,8 +180,8 @@ namespace Projekcik.Controllers
             // 2. Jeśli stare pasuje, zahaszuj NOWE hasło i nadpisz w bazie
             user.Haslo = BCrypt.Net.BCrypt.HashPassword(dto.NoweHaslo);
 
-            _context.Update(user);
-            await _context.SaveChangesAsync();
+            _dbContext.Update(user);
+            await _dbContext.SaveChangesAsync();
 
             // Sukces! Przekieruj np. do listy lub szczegółów
             TempData["Message"] = "Hasło zostało zmienione pomyślnie!";
@@ -190,19 +193,19 @@ namespace Projekcik.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var users = await _context.Zawodnicy.FindAsync(id);
+            var users = await _dbContext.Zawodnicy.FindAsync(id);
             if (users != null)
             {
-                _context.Zawodnicy.Remove(users);
+                _dbContext.Zawodnicy.Remove(users);
             }
 
-            await _context.SaveChangesAsync();
+            await _dbContext.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool UsersExists(int id)
         {
-            return _context.Zawodnicy.Any(e => e.IdZawodnika == id);
+            return _dbContext.Zawodnicy.Any(e => e.IdZawodnika == id);
         }
     }
 }
