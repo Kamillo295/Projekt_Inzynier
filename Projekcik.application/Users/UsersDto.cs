@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Projekcik.application.Users
+﻿namespace Projekcik.application.Users
 {
-    public class UsersDto 
-    { 
+    public class UsersDto
+    {
+        public int IdZawodnika { get; set; } 
         public string Imie { get; set; } = default!;
         public string Nazwisko { get; set; } = default!;
         public string NumerTelefonu { get; set; } = default!;
@@ -16,6 +11,5 @@ namespace Projekcik.application.Users
         public string? RozmiarKoszulki { get; set; }
         public int? Wiek { get; set; }
         public string? KodPocztowy { get; set; }
-
     }
 }
