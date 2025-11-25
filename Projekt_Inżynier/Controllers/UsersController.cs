@@ -24,8 +24,8 @@ namespace Projekcik.Controllers
             _mapper = mapper;
         }
 
-        public Task<Projekcik.Entities.Users?> GetByName(string name)
-        => _dbContext.Users.FirstOrDefaultAsync(cw => cw.Name.ToLower() == name.ToLower());
+        //public Task<Projekcik.Entities.Users?> GetByName(string name)
+        //=> _dbContext.Users.FirstOrDefaultAsync(cw => cw.Name.ToLower() == name.ToLower());
 
         // GET: Users
         public async Task<IActionResult> Index()
@@ -57,24 +57,23 @@ namespace Projekcik.Controllers
             return View();
         }
 
-        // POST: Users/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Projekcik.application.Users.UsersDto usersDto)
+        public async Task<IActionResult> Create(UsersDto userDto)
         {
-            if (ModelState.IsValid) 
+            // Tutaj ModelState.IsValid będzie FALSE, jeśli FluentValidation znajdzie błędy
+            if (ModelState.IsValid)
             {
-                var users = _mapper.Map<Projekcik.Entities.Users>(usersDto);
-                users.Haslo = BCrypt.Net.BCrypt.HashPassword(users.Haslo);
+                var userEntity = _mapper.Map<Projekcik.Entities.Users>(userDto);
+                userEntity.Haslo = BCrypt.Net.BCrypt.HashPassword(userDto.Haslo);
 
-                _dbContext.Add(users);
+                _dbContext.Add(userEntity);
                 await _dbContext.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
 
-            return View(usersDto);
+            // Jeśli walidacja nie przeszła, wracamy do widoku z błędami
+            return View(userDto);
         }
 
         // GET: Users/Edit/5
