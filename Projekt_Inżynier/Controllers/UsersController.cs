@@ -29,8 +29,8 @@ namespace Projekcik.Controllers
         //=> _dbContext.Users.FirstOrDefaultAsync(cw => cw.Name.ToLower() == name.ToLower());
 
 
-        //public Task<Projekcik.Entities.Users?> GetByName(string name)
-        //=> _dbContext.Zawodnicy.FirstOrDefaultAsync(cw => cw.Imie.ToLower() == name.ToLower());
+        public Task<Projekcik.Entities.Users?> GetByName(string name)
+        => _dbContext.Zawodnicy.FirstOrDefaultAsync(cw => cw.Imie.ToLower() == name.ToLower());
 
         // GET: Users
         public async Task<IActionResult> Index()
@@ -92,13 +92,14 @@ namespace Projekcik.Controllers
                 return View(usersDto);
             }
 
-            var users = _mapper.Map<Users>(usersDto);
-            users.Haslo = BCrypt.Net.BCrypt.HashPassword(users.Haslo);
+            var userEntity = _mapper.Map<Users>(usersDto);
+            userEntity.Haslo = BCrypt.Net.BCrypt.HashPassword(userEntity.Haslo);
 
             _dbContext.Add(userEntity);
             await _dbContext.SaveChangesAsync();
 
             return RedirectToAction(nameof(Index));
+        }
 
 
 
