@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.CodeAnalysis.Scripting;
 using Microsoft.EntityFrameworkCore;
-using Projekcik.application.Users;
 using Projekcik.Entities;
 using Projekcik.Infrastructure.Persistance;
 
@@ -74,6 +73,7 @@ namespace Projekcik.Controllers
             return View(users);
         }
 
+        // GET: Users/Edit/5
         // GET: Users/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -167,6 +167,7 @@ namespace Projekcik.Controllers
         {
             return _context.Zawodnicy.Any(e => e.IdZawodnika == id);
         }
+<<<<<<< HEAD
 
         // GET: Wyświetl formularz zmiany hasła
         public IActionResult ChangePassword(int id)
@@ -204,5 +205,7 @@ namespace Projekcik.Controllers
             TempData["Message"] = "Hasło zostało zmienione pomyślnie!";
             return RedirectToAction(nameof(Details), new { id = dto.IdZawodnika });
         }
+=======
+>>>>>>> parent of a8aabba (Hasło DTO)
     }
 }

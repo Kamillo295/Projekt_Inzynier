@@ -1,18 +1,26 @@
-﻿using AutoMapper;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using AutoMapper;
+using Projekcik.application.Users;
 using Projekcik.Entities;
-using Projekcik.application.Users; 
 
-namespace Projekcik.Application.Mappings
+namespace Projekcik.application.Mappings
 {
-    public class MappingProfile : Profile
+    public class UsersMappingProfile : Profile
     {
-        public MappingProfile()
+        public UsersMappingProfile()
         {
-            // Twoje stare mapowanie (UsersDto)
-            CreateMap<Users, UsersDto>().ReverseMap();
+            // Stare mapowanie (do rejestracji/wyświetlania)
+            CreateMap<Projekcik.Entities.Users, Projekcik.application.Users.UsersDto>()
+                .ReverseMap();
 
-            // NOWE mapowanie (UserEditDto) - to naprawia Twój błąd!
-            CreateMap<Users, UserEditDto>().ReverseMap();
+            // NOWE mapowanie (do edycji)
+            CreateMap<Projekcik.Entities.Users, Projekcik.application.Users.UserEditDto>()
+                .ReverseMap();
+            // ReverseMap pozwoli nam zamienić Encję -> EditDto przy wejściu na formularz
         }
     }
 }
