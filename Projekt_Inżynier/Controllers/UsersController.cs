@@ -59,11 +59,11 @@ namespace Projekcik.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Projekcik.Entities.Users users)
+        public async Task<IActionResult> Create(Projekcik.application.Users.UsersDto usersDto)
         {
-            if (ModelState.IsValid)
+            if (ModelState.IsValid) 
             {
-               // var users = _mapper.Map<Projekcik.Entities.Users>(usersDto);
+                var users = _mapper.Map<Projekcik.Entities.Users>(usersDto);
                 users.Haslo = BCrypt.Net.BCrypt.HashPassword(users.Haslo);
 
                 _context.Add(users);
@@ -71,7 +71,7 @@ namespace Projekcik.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            return View(users);
+            return View(usersDto);
         }
 
         // GET: Users/Edit/5

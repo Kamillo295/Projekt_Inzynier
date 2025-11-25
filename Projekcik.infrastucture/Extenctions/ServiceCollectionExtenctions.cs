@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Projekcik.Infrastructure.Persistance;
+using FluentValidation;
 
 namespace Projekcik.infrastucture.Extenctions
 {
@@ -17,6 +18,7 @@ namespace Projekcik.infrastucture.Extenctions
         {
             services.AddDbContext<AplicationDbContext>(options =>options.UseSqlServer(
                 configuration.GetConnectionString("BazaRoboty")));
+
 
         }
     }

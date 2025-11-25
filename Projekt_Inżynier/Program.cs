@@ -4,6 +4,8 @@ using Projekcik.Application.Mappings;
 using Projekcik.Entities;
 using Projekcik.Infrastructure.Persistance;
 using Projekcik.infrastucture.Extenctions;
+using FluentValidation;
+using FluentValidation.AspNetCore;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,6 +14,10 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddAutoMapper(typeof(Projekcik.application.Users.UserEditDto).Assembly);
+
+builder.Services.AddValidatorsFromAssemblyContaining<Projekcik.application.Users.UsersDtoValidator>()
+    .AddFluentValidationAutoValidation()
+    .AddFluentValidationClientsideAdapters();
 
 var app = builder.Build();
 
