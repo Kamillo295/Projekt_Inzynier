@@ -9,6 +9,7 @@ using Microsoft.CodeAnalysis.Scripting;
 using Microsoft.EntityFrameworkCore;
 using Projekcik.Entities;
 using Projekcik.Infrastructure.Persistance;
+using Projekcik.application.Users; // Upewnij się, że ten namespace jest dodany dla DTO
 
 namespace Projekcik.Controllers
 {
@@ -16,8 +17,8 @@ namespace Projekcik.Controllers
     {
         private readonly AplicationDbContext _context;
         private readonly IMapper _mapper;
-    
-        public UsersController(AplicationDbContext context, IMapper mapper)     //tutaj mapowanie dto
+
+        public UsersController(AplicationDbContext context, IMapper mapper)
         {
             _context = context;
             _mapper = mapper;
@@ -54,15 +55,12 @@ namespace Projekcik.Controllers
         }
 
         // POST: Users/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Projekcik.Entities.Users users)
         {
             if (ModelState.IsValid)
             {
-               // var users = _mapper.Map<Projekcik.Entities.Users>(usersDto);
                 users.Haslo = BCrypt.Net.BCrypt.HashPassword(users.Haslo);
 
                 _context.Add(users);
@@ -74,7 +72,6 @@ namespace Projekcik.Controllers
         }
 
         // GET: Users/Edit/5
-        // GET: Users/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null) return NotFound();
@@ -84,20 +81,16 @@ namespace Projekcik.Controllers
             if (userEntity == null) return NotFound();
 
             // 2. Mapujemy na EditDto (bezpieczne, bez hasła)
-            var editDto = _mapper.Map<Projekcik.application.Users.UserEditDto>(userEntity);
+            var editDto = _mapper.Map<UserEditDto>(userEntity);
 
             // 3. Wysyłamy DTO do widoku
             return View(editDto);
         }
 
         // POST: Users/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        // POST: Users/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        // Przyjmujemy UserEditDto zamiast Users
-        public async Task<IActionResult> Edit(int id, Projekcik.application.Users.UserEditDto editDto)
+        public async Task<IActionResult> Edit(int id, UserEditDto editDto)
         {
             if (id != editDto.IdZawodnika) return NotFound();
 
@@ -105,13 +98,12 @@ namespace Projekcik.Controllers
             {
                 try
                 {
-                    // 1. Pobierz ORYGINALNEGO użytkownika z bazy (to ważne!)
+                    // 1. Pobierz ORYGINALNEGO użytkownika z bazy
                     var userEntity = await _context.Zawodnicy.FindAsync(id);
                     if (userEntity == null) return NotFound();
 
                     // 2. Mapuj zmiany: DTO -> Encja
-                    // AutoMapper przepisze tylko imię, nazwisko, telefon itd.
-                    // Pole 'Haslo' w userEntity pozostanie nienaruszone (stare hasło zostaje)!
+                    // AutoMapper przepisze dane, ale stare hasło w userEntity zostanie zachowane
                     _mapper.Map(editDto, userEntity);
 
                     // 3. Zapisz zmiany
@@ -126,7 +118,6 @@ namespace Projekcik.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            // Jeśli błąd walidacji, wracamy do widoku z tym samym DTO
             return View(editDto);
         }
 
@@ -167,9 +158,11 @@ namespace Projekcik.Controllers
         {
             return _context.Zawodnicy.Any(e => e.IdZawodnika == id);
         }
-<<<<<<< HEAD
-		
+
+        // --- SEKCJA ZMIANY HASŁA (Naprawiona) ---
+
         // GET: Wyświetl formularz zmiany hasła
+        [HttpGet]
         public IActionResult ChangePassword(int id)
         {
             return View(new ChangePasswordDto { IdZawodnika = id });
@@ -186,12 +179,12 @@ namespace Projekcik.Controllers
             if (user == null) return NotFound();
 
             // 1. Sprawdź czy STARE hasło pasuje do tego w bazie
-            // BCrypt.Verify(tekstJawny, hashZBazy)
             bool isPasswordCorrect = BCrypt.Net.BCrypt.Verify(dto.StareHaslo, user.Haslo);
 
             if (!isPasswordCorrect)
             {
-                ModelState.AddModelError("Stare Hasło", "Błędne aktualne hasło.");
+                // Używamy klucza "StareHaslo" zgodnego z nazwą właściwości w DTO
+                ModelState.AddModelError("StareHaslo", "Błędne aktualne hasło.");
                 return View(dto);
             }
 
@@ -201,11 +194,8 @@ namespace Projekcik.Controllers
             _context.Update(user);
             await _context.SaveChangesAsync();
 
-            // Sukces! Przekieruj np. do listy lub szczegółów
             TempData["Message"] = "Hasło zostało zmienione pomyślnie!";
             return RedirectToAction(nameof(Details), new { id = dto.IdZawodnika });
         }
-=======
->>>>>>> parent of a8aabba (Hasło DTO)
     }
 }
