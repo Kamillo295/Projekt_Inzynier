@@ -108,20 +108,18 @@ namespace Projekcik.Migrations
 
                     b.Property<string>("Imie")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("KodPocztowy")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Nazwisko")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<string>("NumerTelefonu")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("NumerTelefonu")
+                        .HasMaxLength(12)
+                        .HasColumnType("int");
 
                     b.Property<string>("RozmiarKoszulki")
                         .HasColumnType("nvarchar(max)");

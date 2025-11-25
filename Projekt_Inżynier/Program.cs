@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
-using Projekcik.application.Mappings;
+using Projekcik.Application.Mappings;
 using Projekcik.Entities;
 using Projekcik.Infrastructure.Persistance;
 using Projekcik.infrastucture.Extenctions;
@@ -11,8 +11,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddInfrastructure(builder.Configuration);
-builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-//builder.Services.AddAutoMapper(typeof(UsersMappingProfile));
+builder.Services.AddAutoMapper(typeof(Projekcik.application.Users.UserEditDto).Assembly);
 
 var app = builder.Build();
 
