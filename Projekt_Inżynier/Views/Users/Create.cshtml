@@ -60,7 +60,7 @@
             <div class="g-recaptcha" data-sitekey="@Config["Recaptcha:SiteKey"]"></div>
 
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <input type="submit" value="Utwórz" class="btn btn-primary" />
             </div>
 
         </form>
@@ -68,7 +68,9 @@
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index" class="btn btn-success">
+        Powrót do listy
+    </a>
 </div>
 
 @section Scripts {

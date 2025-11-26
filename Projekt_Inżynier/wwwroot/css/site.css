@@ -1,22 +1,213 @@
+/* =========================================
+   1. G£ÓWNE USTAWIENIA (T£O I CZCIONKA)
+   ========================================= */
 html {
-  font-size: 14px;
+    font-size: 14px;
 }
 
 @media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
-}
-
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}
-
-html {
-  position: relative;
-  min-height: 100%;
+    html {
+        font-size: 16px;
+    }
 }
 
 body {
-  margin-bottom: 60px;
+    background-color: #f4f6f9; /* Lekko szare, nowoczesne t³o */
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #495057;
+    margin-bottom: 60px;
+}
+
+/* =========================================
+   2. NAG£ÓWKI I TYPOGRAFIA
+   ========================================= */
+h1, h2, h3, h4 {
+    color: #2c3e50;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    letter-spacing: -0.5px;
+}
+
+/* Kreska pod nag³ówkami */
+h1 {
+    border-bottom: 3px solid #0d6efd; /* Kolor niebieski */
+    display: inline-block;
+    padding-bottom: 5px;
+    margin-bottom: 30px;
+}
+
+a {
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+/* =========================================
+   3. TABELE (AUTOMATYCZNA STYLIZACJA)
+   ========================================= */
+/* Ka¿da tabela w projekcie dostanie ten styl */
+table.table {
+    background-color: #ffffff;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05); /* Cieñ pod tabel¹ */
+    border-radius: 10px; /* Zaokr¹glone rogi */
+    overflow: hidden; /* ¯eby rogi ucina³y t³o */
+    border-collapse: separate;
+    border-spacing: 0;
+    margin-bottom: 2rem;
+}
+
+table thead {
+    background-color: #343a40; /* Ciemny nag³ówek */
+    color: #ffffff;
+}
+
+    table thead th {
+        padding: 15px;
+        border: none;
+        text-transform: uppercase;
+        font-size: 0.85rem;
+        letter-spacing: 1px;
+    }
+
+table tbody td {
+    padding: 15px;
+    vertical-align: middle;
+    border-bottom: 1px solid #dee2e6;
+}
+
+/* Efekt najechania myszk¹ na wiersz */
+table tbody tr:hover {
+    background-color: #f1f3f5;
+    transform: scale(1.005); /* Minimalne powiêkszenie */
+    transition: all 0.2s ease-in-out;
+}
+
+/* =========================================
+   4. FORMULARZE (CREATE / EDIT)
+   ========================================= */
+/* Style dla inputów i selectów */
+.form-control, .form-select {
+    border-radius: 8px;
+    border: 1px solid #ced4da;
+    padding: 10px 15px;
+    background-color: #fff;
+    transition: all 0.3s;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+}
+
+    /* Efekt po klikniêciu w pole */
+    .form-control:focus, .form-select:focus {
+        border-color: #0d6efd;
+        box-shadow: 0 0 0 4px rgba(13, 110, 253, 0.15); /* Niebieska poœwiata */
+    }
+
+/* Etykiety nad polami */
+.control-label {
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #495057;
+    display: block;
+}
+
+/* Komunikaty b³êdów walidacji */
+.text-danger {
+    font-size: 0.85rem;
+    font-weight: 500;
+    margin-top: 4px;
+    display: block;
+}
+
+/* Automatyczne ramki wokó³ formularzy na podstronach Create/Edit/Login */
+/* To zadzia³a na standardowe kontenery row > col-md-4 */
+.row > .col-md-4 {
+    background: white;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+    border: 1px solid #e9ecef;
+    min-width: 400px; /* Trochê szersze formularze */
+}
+
+/* =========================================
+   5. PRZYCISKI (BUTTONS)
+   ========================================= */
+.btn {
+    border-radius: 6px;
+    font-weight: 500;
+    padding: 8px 18px;
+    letter-spacing: 0.3px;
+    transition: all 0.2s;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+    .btn:hover {
+        transform: translateY(-2px); /* Przycisk unosi siê do góry */
+        box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    }
+
+/* Specyficzne kolory */
+.btn-primary {
+    background-color: #0d6efd;
+    border: none;
+}
+
+.btn-danger {
+    background-color: #dc3545;
+    border: none;
+}
+
+/* =========================================
+   6. NAVBAR (MENU GÓRNE)
+   ========================================= */
+.navbar {
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    background-color: #ffffff !important; /* Bia³e menu */
+}
+
+.navbar-brand {
+    font-weight: 700;
+    color: #0d6efd !important;
+}
+
+.nav-link {
+    color: #495057 !important;
+    font-weight: 500;
+}
+
+    .nav-link:hover {
+        color: #0d6efd !important;
+    }
+
+/* =========================================
+   NAPRAWA UK£ADU (STICKY FOOTER FLEXBOX)
+   ========================================= */
+
+/* 1. Ustawiamy ca³¹ stronê jako elastyczny kontener */
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* Minimalna wysokoœæ to 100% ekranu */
+    margin: 0; /* Reset marginesów */
+}
+
+/* 2. Treœæ g³ówna (main) ma zaj¹æ ca³e wolne miejsce */
+/* Dziêki temu wypycha stopkê na sam dó³ */
+main {
+    flex: 1;
+}
+
+/* 3. Stylizacja stopki - teraz jest zwyk³ym blokiem na dole */
+.footer {
+    position: static !important; /* Wy³¹czamy pozycjonowanie absolutne */
+    width: 100%;
+    white-space: nowrap;
+    line-height: 40px;
+    background-color: #f8f9fa; /* Jasne t³o */
+    border-top: 1px solid #dee2e6;
+    color: #6c757d;
+    margin-top: auto; /* Dodatkowe zabezpieczenie */
+}
+
+/* Opcjonalnie: Jeœli masz kontener w _Layout, upewnij siê ¿e te¿ jest elastyczny */
+.container {
+    width: 100%; /* ¯eby treœæ nie by³a zbyt w¹ska */
 }
