@@ -33,9 +33,18 @@ namespace Projekcik.Controllers
         => _dbContext.Zawodnicy.FirstOrDefaultAsync(cw => cw.Imie.ToLower() == name.ToLower());
 
         // GET: Users
+        // GET: Users
         public async Task<IActionResult> Index()
         {
-            return View(await _dbContext.Zawodnicy.ToListAsync());
+            // 1. Pobieramy Encje z bazy danych
+            var usersEntities = await _dbContext.Zawodnicy.ToListAsync();
+
+            // 2. Zamieniamy je na listę DTO (tu AutoMapper robi magię)
+            // Dzięki temu widok dostanie obiekty, które mają atrybuty [Display]
+            var usersDtos = _mapper.Map<List<Projekcik.application.Users.UsersDto>>(usersEntities);
+
+            // 3. Zwracamy listę DTO do widoku
+            return View(usersDtos);
         }
 
         // GET: Users/Details/5
