@@ -1,28 +1,32 @@
-﻿using System.ComponentModel.DataAnnotations; // Pamiętaj o tym usingu!
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Projekcik.application.Users
 {
     public class UsersDto
     {
+        [Display(Name = "Numer")]
         public int IdZawodnika { get; set; }
 
-        [Display(Name = "Imię")] // To zmieni nagłówek w tabeli i etykietę w formularzu
-        public string Imie { get; set; } = default!;
+        [Display(Name = "Imię")]
+        public string? Imie { get; set; } = default!;
 
         [Display(Name = "Nazwisko")]
-        public string Nazwisko { get; set; } = default!;
+        public string? Nazwisko { get; set; } = default!;
 
         [Display(Name = "Numer telefonu")]
-        public string NumerTelefonu { get; set; } = default!;
+        public string? NumerTelefonu { get; set; } = default!;
 
         [Display(Name = "Hasło")]
-        public string Haslo { get; set; } = default!;
+        public string? Haslo { get; set; } = default!;
+
+        [Display(Name = "Potwierdź hasło")]
+        public string? Potwierdzhaslo { get; set; } = default!;
 
         [Display(Name = "Adres e-mail")]
         public string? Email { get; set; }
 
         [Display(Name = "Rozmiar koszulki")]
-        public string? RozmiarKoszulki { get; set; }
+        public RozmiarKoszulkiTyp? RozmiarKoszulki { get; set; }
 
         [Display(Name = "Wiek zawodnika")]
         public int? Wiek { get; set; }

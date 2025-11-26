@@ -15,6 +15,9 @@
     <thead>
         <tr>
             <th>
+                @Html.DisplayNameFor(model => model.IdZawodnika)
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.Imie)
             </th>
             <th>
@@ -38,12 +41,18 @@
             <th>
                 @Html.DisplayNameFor(model => model.KodPocztowy)
             </th>
+            <th>
+                Edycja i inne działania
+            </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
 @foreach (var item in Model) {
         <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.IdZawodnika)
+            </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Imie)
             </td>
