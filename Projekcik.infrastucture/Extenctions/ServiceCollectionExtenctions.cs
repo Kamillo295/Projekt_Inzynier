@@ -18,8 +18,6 @@ namespace Projekcik.infrastucture.Extenctions
         {
             services.AddDbContext<AplicationDbContext>(options =>options.UseSqlServer(
                 configuration.GetConnectionString("BazaRoboty")));
-
-
         }
     }
 }
