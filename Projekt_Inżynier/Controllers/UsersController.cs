@@ -66,6 +66,10 @@ namespace Projekcik.Controllers
 
             return View(users);
         }
+        public IActionResult Login()
+        { 
+            return View(); 
+        }
 
         // GET: Users/Create
         public IActionResult Create()

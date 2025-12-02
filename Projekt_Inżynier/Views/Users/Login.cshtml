@@ -1,0 +1,32 @@
+﻿@model Projekcik.application.Users.LoginDto
+
+@{
+    ViewData["Title"] = "Logownie";
+}
+
+<h1>Logowanie</h1>
+
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Login">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="form-group mb-3">
+                <label asp-for="Email" class="control-label">Email</label>
+                <input asp-for="Email" type="Text" class="form-control" />
+                <span asp-validation-for="Email" class="text"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="Haslo" class="control-label">Hasło</label>
+                <input asp-for="Haslo" type="password" class="form-control" />
+                <span asp-validation-for="Haslo" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mt-4">
+                <input type="submit" value="Zaloguj" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
