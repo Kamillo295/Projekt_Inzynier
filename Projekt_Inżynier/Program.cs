@@ -14,6 +14,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddAutoMapper(typeof(Projekcik.application.Users.UserEditDto).Assembly);
+builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
+builder.Services.AddScoped<IEmailService, EmailService>();
 
 // ---------------------------------------- Fluent Validation --------------------------------------------
 builder.Services.AddValidatorsFromAssemblyContaining<Projekcik.application.Users.UsersDtoValidator>()

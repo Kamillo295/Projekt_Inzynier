@@ -18,11 +18,13 @@ namespace Projekcik.Controllers
         private readonly AplicationDbContext _dbContext;
         private readonly IMapper _mapper;
         private readonly IConfiguration _config;
-        public UsersController(AplicationDbContext context, IMapper mapper, IConfiguration config)     //tutaj mapowanie dto
+        private readonly IEmailService _emailService;
+        public UsersController(AplicationDbContext context, IMapper mapper, IConfiguration config,IEmailService emailService)     //tutaj mapowanie dto
         {
             _dbContext = context;
             _mapper = mapper;
             _config = config;
+            _emailService = emailService;
         }
 
         //public Task<Projekcik.Entities.Users?> GetByName(string name)
@@ -95,8 +97,20 @@ namespace Projekcik.Controllers
             var userEntity = _mapper.Map<Users>(usersDto);
             userEntity.Haslo = BCrypt.Net.BCrypt.HashPassword(userEntity.Haslo);
 
+
+            userEntity.EmailConfirmationToken = Guid.NewGuid().ToString();
+
             _dbContext.Add(userEntity);
             await _dbContext.SaveChangesAsync();
+
+            await _dbContext.SaveChangesAsync();
+
+            var confirmLink = Url.Action("ConfirmEmail", "Users",
+            new { id = userEntity.IdZawodnika, token = userEntity.EmailConfirmationToken },
+            Request.Scheme);
+
+            await _emailService.SendEmailAsync(userEntity.Email, "Potwierdź swój email",
+                $"Kliknij w link, aby potwierdzić konto: <a href='{confirmLink}'>Potwierdź</a>");
 
             return RedirectToAction(nameof(Index));
         }
@@ -228,6 +242,23 @@ namespace Projekcik.Controllers
             await _dbContext.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
+
+        public async Task<IActionResult> ConfirmEmail(int id, string token)
+        {
+            var user = await _dbContext.Zawodnicy.FindAsync(id);
+            if (user == null) return NotFound();
+
+            if (user.EmailConfirmationToken != token)
+                return BadRequest("Token nieprawidłowy.");
+
+            user.EmailConfirmed = true;
+            user.EmailConfirmationToken = null;
+            _dbContext.Update(user);
+            await _dbContext.SaveChangesAsync();
+
+            return View("EmailConfirmed");
+        }
+
 
         private bool UsersExists(int id)
         {

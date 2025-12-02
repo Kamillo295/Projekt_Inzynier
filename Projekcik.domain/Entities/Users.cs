@@ -38,6 +38,10 @@ namespace Projekcik.Entities
             public string? KodPocztowy { get; set; }
 
         public ICollection<Team> Druzyny { get; set; } = new List<Team>();
+
+        public bool EmailConfirmed { get; set; } = false;
+        public string EmailConfirmationToken { get; set; }
+
     }
 
     public enum RozmiarKoszulkiTyp
