@@ -15,5 +15,9 @@ namespace Projekcik.Entities
         public int? Wiek { get; set; }
         public string? KodPocztowy { get; set; }
         public ICollection<Team> Druzyny { get; set; } = new List<Team>();
+
+        public bool EmailConfirmed { get; set; } = false;
+        public string EmailConfirmationToken { get; set; }
+
     }
 }
