@@ -1,12 +1,15 @@
-﻿using FluentValidation;
-using Projekcik.Entities;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using FluentValidation;
 
 namespace Projekcik.application.Users
 {
-    public class UsersDtoValidator : AbstractValidator<UsersDto>
+    public class UserEditDtoValidatior : AbstractValidator<UserEditDto>
     {
-        public UsersDtoValidator()
+        public UserEditDtoValidatior()
         {
             RuleFor(x => x.Imie)
                 .NotEmpty().WithMessage("Imię jest wymagane.")
@@ -25,15 +28,6 @@ namespace Projekcik.application.Users
                 .Matches(@"^\d+$").WithMessage("Pole może zawierać tylko cyfry!")
                 .Length(9, 9).WithMessage("Telefon musi mieć 9 cyfr");
 
-            RuleFor(x => x.Haslo)
-                .NotEmpty().WithMessage("Hasło jest wymagane.")
-                .Matches(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$")
-                .WithMessage("Hasło musi mieć min. 8 znaków, zawierać co najmniej jedną dużą literę, jedną małą literę i cyfrę.");
-
-            RuleFor(x => x.Potwierdzhaslo)
-                 .NotEmpty().WithMessage("Musisz powtórzyć hasło.")
-                 .Equal(x => x.Haslo).WithMessage("Hasła muszą być identyczne.");
-
             RuleFor(x => x.Wiek)
                 .InclusiveBetween(1, 120).WithMessage("Wiek musi być realny (1-120).")
                 .When(x => x.Wiek.HasValue);
@@ -48,5 +42,5 @@ namespace Projekcik.application.Users
         public enum RozmiarKoszulkiTyp { XS, S, M, L, XL, XXL }
     }
 
-    
+
 }

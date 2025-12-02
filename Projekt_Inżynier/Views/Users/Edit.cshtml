@@ -37,7 +37,10 @@
             </div>
             <div class="form-group">
                 <label asp-for="RozmiarKoszulki" class="control-label"></label>
-                <input asp-for="RozmiarKoszulki" class="form-control" />
+                <select asp-for="RozmiarKoszulki" class="form-control"
+                        asp-items="Html.GetEnumSelectList<Projekcik.application.Users.RozmiarKoszulkiTyp>()">
+                    <option value="">-- wybierz rozmiar --</option>
+                </select>
                 <span asp-validation-for="RozmiarKoszulki" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -51,7 +54,7 @@
                 <span asp-validation-for="KodPocztowy" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+                <input type="submit" value="Zapisz" class="btn btn-primary" />
             </div>
             <div class="form-group mb-3">
                 <hr />
@@ -66,7 +69,9 @@
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index" class="btn btn-success">
+        Powrót do listy
+    </a>
 </div>
 
 @section Scripts {

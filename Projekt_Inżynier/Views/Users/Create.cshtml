@@ -37,13 +37,21 @@
                 <span asp-validation-for="Haslo" class="text-danger"></span>
             </div>
             <div class="form-group">
+                <label asp-for="Potwierdzhaslo" class="control-label"></label>
+                <input asp-for="Potwierdzhaslo" class="form-control" />
+                <span asp-validation-for="Potwierdzhaslo" class="text-danger"></span>
+            </div>
+            <div class="form-group">
                 <label asp-for="Email" class="control-label"></label>
                 <input asp-for="Email" class="form-control" />
                 <span asp-validation-for="Email" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="RozmiarKoszulki" class="control-label"></label>
-                <input asp-for="RozmiarKoszulki" class="form-control" />
+                <select asp-for="RozmiarKoszulki" class="form-control"
+                        asp-items="Html.GetEnumSelectList<Projekcik.application.Users.RozmiarKoszulkiTyp>()">
+                    <option value="">-- wybierz rozmiar --</option>
+                </select>
                 <span asp-validation-for="RozmiarKoszulki" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -60,7 +68,7 @@
             <div class="g-recaptcha" data-sitekey="@Config["Recaptcha:SiteKey"]"></div>
 
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <input type="submit" value="Utwórz" class="btn btn-primary" />
             </div>
 
         </form>
@@ -68,7 +76,9 @@
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index" class="btn btn-success">
+        Powrót do listy
+    </a>
 </div>
 
 @section Scripts {

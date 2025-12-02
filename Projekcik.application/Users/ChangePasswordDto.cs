@@ -6,14 +6,13 @@ namespace Projekcik.application.Users
     {
         public int IdZawodnika { get; set; }
 
-        [Required(ErrorMessage = "Podaj aktualne hasło")]
+        [Display(Name = "Aktualne hasło")]
         public string StareHaslo { get; set; } = default!;
 
-        [Required(ErrorMessage = "Podaj nowe hasło")]
-        [MinLength(8, ErrorMessage = "Hasło musi mieć min. 8 znaków")]
+        [Display(Name = "Nowe hasało")]
         public string NoweHaslo { get; set; } = default!;
 
-        [Compare("NoweHaslo", ErrorMessage = "Hasła nie są identyczne")]
+        [Display(Name = "Powtórz nowe hasło")]
         public string PowtorzHaslo { get; set; } = default!;
     }
 }

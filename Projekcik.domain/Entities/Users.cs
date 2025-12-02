@@ -8,31 +8,23 @@ namespace Projekcik.Entities
         [Key]
         public int IdZawodnika { get; set; }
 
-            [Required(ErrorMessage = "Imię jest wymagane")]
-            [StringLength(50, ErrorMessage = "Imię nie może być dłuższe niż 50 znaków")]
+
             public string Imie { get; set; } = default!;
 
-            [Required(ErrorMessage = "Nazwisko jest wymagane")]
-            [StringLength(50, ErrorMessage = "Nazwisko nie może być dłuższe niż 50 znaków")]
+
             public string Nazwisko { get; set; } = default!;
 
-            [Required(ErrorMessage = "Numer telefonu jest wymagany")]
-            [Phone(ErrorMessage = "Niepoprawny format numeru telefonu")]
             public string NumerTelefonu { get; set; } = default!;
 
-            [Required(ErrorMessage = "Hasło jest wymagane")]
-            [MinLength(8, ErrorMessage = "Hasło musi mieć co najmniej 8 znaków")]
-            [DataType(DataType.Password)]
+
             public string Haslo { get; set; } = default!;
 
-            [EmailAddress(ErrorMessage = "Niepoprawny format adresu email")]
             public string? Email { get; set; }
 
-            [Display(Name = "Rozmiar Koszulki")]
-            [EnumDataType(typeof(RozmiarKoszulkiTyp), ErrorMessage = "Niewłaściwy rozmiar")]
+
             public string? RozmiarKoszulki { get; set; }
 
-            [Range(1, 120, ErrorMessage = "Wiek musi mieścić się w przedziale 1-120")]
+
             public int? Wiek { get; set; }
 
             public string? KodPocztowy { get; set; }
@@ -44,14 +36,6 @@ namespace Projekcik.Entities
 
     }
 
-    public enum RozmiarKoszulkiTyp
-    {
-        XS,
-        S,
-        M,
-        L,
-        XL,
-        XXL
-    }
+
 
 }
