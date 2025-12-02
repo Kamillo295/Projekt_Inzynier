@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.CodeAnalysis.Scripting;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages;
 using Projekcik.application.Users;
 using Projekcik.Entities;
 using Projekcik.Infrastructure.Persistance;
@@ -271,7 +272,10 @@ namespace Projekcik.Controllers
 
             return View("EmailConfirmed");
         }
-
+        public async Task<IActionResult> ForgotPassword()           //tu trzeba dorobić
+        {
+            return View();
+        }
 
         private bool UsersExists(int id)
         {
