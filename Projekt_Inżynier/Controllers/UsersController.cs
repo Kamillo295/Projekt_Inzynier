@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using Humanizer;
+using Microsoft.AspNetCore.DataProtection.AuthenticatedEncryption;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.CodeAnalysis.Scripting;
@@ -70,6 +73,26 @@ namespace Projekcik.Controllers
         public IActionResult Login()
         { 
             return View(); 
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Login(LoginDto loginDto)
+        {
+            var user = await _dbContext.Zawodnicy.FirstOrDefaultAsync(u => u.Email == loginDto.Email);
+
+            if (user == null)
+            {
+                ModelState.AddModelError("", "Użytkownik nie istnieje");
+                return View();
+            }
+            var isCorrect = BCrypt.Net.BCrypt.Verify(loginDto.Haslo, user.Haslo);
+            if (!isCorrect)
+            {
+                ModelState.AddModelError("", "Niepoprawne hasło");
+                return View(loginDto);
+            }
+
+            return RedirectToAction("Index", "Home");
         }
 
         // GET: Users/Create
