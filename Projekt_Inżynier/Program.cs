@@ -11,6 +11,13 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.Configure<CookiePolicyOptions>(options =>
+{
+    // Wymagaj zgody u¿ytkownika na nieistotne ciasteczka
+    options.CheckConsentNeeded = context => true;
+    options.MinimumSameSitePolicy = SameSiteMode.Lax;
+});
+
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddInfrastructure(builder.Configuration);
@@ -33,6 +40,7 @@ builder.Services.AddValidatorsFromAssemblyContaining<Projekcik.application.Users
 
 var app = builder.Build();
 
+app.UseCookiePolicy();
 app.UseAuthentication();
 app.UseAuthorization();
 

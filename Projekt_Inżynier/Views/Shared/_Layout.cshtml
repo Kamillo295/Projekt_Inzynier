@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+﻿@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -10,6 +12,13 @@
     <link rel="stylesheet" href="~/Projekcik.styles.css" asp-append-version="true" />
 </head>
 <body>
+    @if (!HttpContextAccessor.HttpContext.Request.Cookies.ContainsKey("cookieConsent"))
+    {
+        <div class="alert alert-info alert-dismissible fade show fixed-bottom m-3" role="alert">
+            Ta strona używa ciasteczek w celu poprawnego działania.
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" onclick="document.cookie='cookieConsent=true; path=/';"></button>
+        </div>
+    }
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container-fluid">
