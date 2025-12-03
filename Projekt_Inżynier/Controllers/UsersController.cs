@@ -14,6 +14,11 @@ using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pag
 using Projekcik.application.Users;
 using Projekcik.Entities;
 using Projekcik.Infrastructure.Persistance;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using System.Security.Claims;
+using Projekcik.Migrations;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Projekcik.Controllers
 {
@@ -54,6 +59,7 @@ namespace Projekcik.Controllers
         }
 
         // GET: Users/Details/5
+        [Authorize]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -92,7 +98,29 @@ namespace Projekcik.Controllers
                 return View(loginDto);
             }
 
+            var claims = new List<Claim>
+            {
+            new Claim(ClaimTypes.NameIdentifier, user.IdZawodnika.ToString()),
+
+            new Claim(ClaimTypes.Email, user.Email),
+            new Claim(ClaimTypes.Name, user.Imie ?? "Użytkownik")
+            };
+
+            // Tworzenie tożsamości
+            var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+
+            // Tworzenie principal
+            var principal = new ClaimsPrincipal(identity);
+
+            // Logowanie -> generuje cookie
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
+
             return RedirectToAction("Index", "Home");
+        }
+        public async Task<IActionResult> Logout()
+        {
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            return RedirectToAction("Login", "Users");
         }
 
         // GET: Users/Create
