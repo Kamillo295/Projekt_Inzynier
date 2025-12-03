@@ -17,8 +17,8 @@ namespace Projekcik.application.Users
         [Display(Name = "Numer telefonu")]
         public string? NumerTelefonu { get; set; } = default!;
 
-        [Display(Name = "Adres e-mail")]
-        public string? Email { get; set; }
+        //[Display(Name = "Adres e-mail")]
+        //public string? Email { get; set; }
 
         [Display(Name = "Rozmiar koszulki")]
         public RozmiarKoszulkiTyp? RozmiarKoszulki { get; set; }

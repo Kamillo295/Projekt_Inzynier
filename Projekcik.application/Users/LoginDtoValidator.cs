@@ -7,11 +7,17 @@ using FluentValidation;
 
 namespace Projekcik.application.Users
 {
-    internal class LoginDtoValidator : AbstractValidator<UserEditDto>
+    public class LoginDtoValidator : AbstractValidator<LoginDto>
     {
         public LoginDtoValidator()
         {
+            RuleFor(x => x.Email)
+                .NotEmpty().WithMessage("Wpisz email");
 
+            RuleFor(x => x.Haslo)
+                .NotEmpty().WithMessage("Hasło jest wymagane.")
+                .Matches(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$")
+                .WithMessage("Hasło musi mieć min. 8 znaków, zawierać co najmniej jedną dużą literę, jedną małą literę i cyfrę.");
         }
     }
 }

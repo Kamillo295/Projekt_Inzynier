@@ -10,9 +10,9 @@ namespace Projekcik.application.Users
     public class LoginDto
     {
         [Display(Name = "Email")]
-        public string Email { get; set; } = default!;
+        public string? Email { get; set; } = default!;
 
-        [Display(Name = "Hasało")]
-        public string Haslo { get; set; } = default!;
+        [Display(Name = "Hasło")]
+        public string? Haslo { get; set; } = default!;
     }
 }
