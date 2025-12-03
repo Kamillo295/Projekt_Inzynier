@@ -103,7 +103,8 @@ namespace Projekcik.Controllers
             new Claim(ClaimTypes.NameIdentifier, user.IdZawodnika.ToString()),
 
             new Claim(ClaimTypes.Email, user.Email),
-            new Claim(ClaimTypes.Name, user.Imie ?? "Użytkownik")
+            new Claim(ClaimTypes.GivenName, user.Imie ?? "Użytkownik"),
+            new Claim(ClaimTypes.Surname, user.Nazwisko ?? "")
             };
 
             // Tworzenie tożsamości
@@ -183,6 +184,7 @@ namespace Projekcik.Controllers
 
 
         // GET: Users/Edit/5
+        [Authorize]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null) return NotFound();
@@ -204,6 +206,7 @@ namespace Projekcik.Controllers
         // POST: Users/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize]
         // Przyjmujemy UserEditDto zamiast Users
         public async Task<IActionResult> Edit(int id, Projekcik.application.Users.UserEditDto editDto)
         {
@@ -239,6 +242,7 @@ namespace Projekcik.Controllers
         }
 
         // GET: Users/Delete/5
+        [Authorize]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -257,6 +261,7 @@ namespace Projekcik.Controllers
         }
 
         // GET: Wyświetl formularz zmiany hasła
+        [Authorize]
         public IActionResult ChangePassword(int id)
         {
             return View(new ChangePasswordDto { IdZawodnika = id });
@@ -265,6 +270,7 @@ namespace Projekcik.Controllers
         // POST: Przetwórz zmianę hasła
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public async Task<IActionResult> ChangePassword(ChangePasswordDto dto)
         {
             if (!ModelState.IsValid) return View(dto);
@@ -296,6 +302,7 @@ namespace Projekcik.Controllers
         // POST: Users/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var users = await _dbContext.Zawodnicy.FindAsync(id);
