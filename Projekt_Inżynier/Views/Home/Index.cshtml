@@ -3,6 +3,59 @@
 }
 <div class="text-center">
     <h1 class="display-4">Strona do turnieju robotów</h1>
-    <h2> tu kiedyś będzie :)</h2>
+	<h3>Czas do nastęnych zawodów:</h3>
+    <div class="center-wrapper">
+        
+        <div class="timer-container">
+            <svg class="timer-svg" width="160" height="160">
+                <circle class="bg" cx="80" cy="80" r="70" />
+                <circle class="progress" cx="80" cy="80" r="70" />
+            </svg>
+            <div id="timeText" class="time-text"></div>
+        </div>
+    </div>
+
+
+    <script>
+        // Docelowa data
+        const targetDate = new Date("2025-12-31T23:59:59");
+
+        const text = document.getElementById("timeText");
+        const circle = document.querySelector(".progress");
+        const circumference = 439.82;
+
+        function updateCountdown() {
+            const now = new Date();
+            const diff = targetDate - now;
+
+            if (diff <= 0) {
+                text.textContent = "KONIEC!";
+                circle.style.strokeDashoffset = circumference;
+                clearInterval(timer);
+                return;
+            }
+
+            // Obliczenia
+            const total = targetDate - (new Date(targetDate.getFullYear(), 0, 1)); // rok od początku
+            const elapsed = diff;
+
+            const progress = elapsed / total;
+            circle.style.strokeDashoffset = circumference - (progress * circumference);
+
+            // Formatowanie czasu
+            let days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            let hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+            let minutes = Math.floor((diff / (1000 * 60)) % 60);
+            let seconds = Math.floor((diff / 1000) % 60);
+
+            text.innerHTML = `${days}d<br>${hours}h ${minutes}m ${seconds}s`;
+        }
+
+        const timer = setInterval(updateCountdown, 1000);
+        updateCountdown();
+    </script>
+
+
+
 </div>
 

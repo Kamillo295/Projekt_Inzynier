@@ -226,3 +226,50 @@ main {
     display: inline-block; /* ¿eby tekst i link pozosta³y razem */
 }
 
+
+.timer-container {
+    position: relative;
+    width: 160px;
+    height: 160px;
+    align-items: center;
+}
+
+.timer-svg {
+    transform: rotate(-90deg);
+}
+
+.bg {
+    fill: none;
+    stroke: #ccc;
+    stroke-width: 10;
+}
+
+.progress {
+    fill: none;
+    stroke: #007bff;
+    stroke-width: 10;
+    stroke-dasharray: 439.82;
+    stroke-dashoffset: 0;
+    transition: stroke-dashoffset 1s linear;
+}
+
+.time-text {
+    position: absolute;
+    top: 45px;
+    left: 0;
+    width: 160px;
+    text-align: center;
+    line-height: 1.2;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.center-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    //height: 100vh;
+    width: 100%;
+}
+
+

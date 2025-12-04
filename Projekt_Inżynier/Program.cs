@@ -30,6 +30,10 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
     {
         options.LoginPath = "/Users/Login";
         options.LogoutPath = "/Users/Logout";
+        //options.AccessDeniedPath = "/Users/AccessDenied"; //-Miejsce do którego trafia user po zagowoaniu
+
+        options.ExpireTimeSpan = TimeSpan.FromMinutes(20); // czas po którym wygasa cookie
+        options.SlidingExpiration = true;
     });
 builder.Services.AddAuthorization();
 
