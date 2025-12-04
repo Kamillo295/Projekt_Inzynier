@@ -6,7 +6,7 @@ namespace Projekcik.Entities
     {
         [Key] public int IdRobota { get; set; } = default;
         public int IdKategorii { get; set; } = default;
-        public string NazwaRobota { get; set; } = default;
+        public string NazwaRobota { get; set; } = default!;
         public int IdDruzyny { get; set; }
         public Team Team { get; set; }
     

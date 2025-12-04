@@ -19,9 +19,9 @@ namespace Projekcik.application.Users
                 .NotEmpty().WithMessage("Nazwisko jest wymagane.")
                 .Length(2, 20).WithMessage("Nazwisko musi mieć między 2 a 20 znaków.");
 
-            RuleFor(x => x.Email)
-                .NotEmpty().WithMessage("Email jest wymagany.")
-                .EmailAddress().WithMessage("Niepoprawny format adresu email.");
+            //RuleFor(x => x.Email)
+            //    .NotEmpty().WithMessage("Email jest wymagany.")
+            //    .EmailAddress().WithMessage("Niepoprawny format adresu email.");
 
             RuleFor(x => x.NumerTelefonu)
                 .NotEmpty().WithMessage("Numer telefonu jest wymagany.")

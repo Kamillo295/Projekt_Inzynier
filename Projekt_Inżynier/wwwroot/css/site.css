@@ -66,6 +66,8 @@ table thead {
         text-transform: uppercase;
         font-size: 0.85rem;
         letter-spacing: 1px;
+        text-align: center;
+        vertical-align: middle;
     }
 
 table tbody td {
@@ -212,3 +214,15 @@ main {
 .container {
     width: 100%; /* ¯eby treœæ nie by³a zbyt w¹ska */
 }
+
+.d-flex {
+    display: flex;
+    justify-content: space-between; /* rozsuwa tylko bloki, nie zawartoœæ w nich */
+    align-items: center; /* wyœrodkowanie w pionie */
+    gap: 1rem;
+}
+
+.login-buttons {
+    display: inline-block; /* ¿eby tekst i link pozosta³y razem */
+}
+
