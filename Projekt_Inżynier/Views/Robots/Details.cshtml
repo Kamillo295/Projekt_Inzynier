@@ -1,0 +1,36 @@
+﻿@model Projekcik.Entities.Robots
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>Robots</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.IdKategorii)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.IdKategorii)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.NazwaRobota)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.NazwaRobota)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.IdDruzyny)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.IdDruzyny)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model?.IdRobota">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>
