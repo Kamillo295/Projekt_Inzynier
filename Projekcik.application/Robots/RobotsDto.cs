@@ -11,13 +11,11 @@ namespace Projekcik.application.Robots
         public int IdRobota { get; set; }
         public string NazwaRobota { get; set; }
 
-        // Klucze obce (przydatne przy edycji, żeby ustawić "selected" w dropdownie)
-        public int IdKategorii { get; set; }
-        public int IdDruzyny { get; set; }
+        // Pola do wyświetlania nazw (zamiast samych ID)
+        public string NazwaKategorii { get; set; }
+        public string NazwaDruzyny { get; set; }
 
-        // Pola "Spłaszczone" - tylko do wyświetlania (Read-Only)
-        // AutoMapper wyciągnie tu nazwy z relacji
-        public string? NazwaKategorii { get; set; }
-        public string? NazwaDruzyny { get; set; }
+        // NOWOŚĆ: Imię i nazwisko operatora
+        public string? NazwaOperatora { get; set; }
     }
 }

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Projekcik.application.Robots;
+using Projekcik.application.Users;
 using Projekcik.Entities;
 using Projekcik.Infrastructure.Persistance;
 
@@ -27,9 +28,10 @@ namespace Projekcik.Controllers
         public async Task<IActionResult> Index()
         {
             var robots = await _context.Roboty
-                .Include(r => r.Team)       // Ważne! Dołącz tabelę Team
-                .Include(r => r.Categories) // Ważne! Dołącz tabelę Categories
-            .ToListAsync();
+                .Include(r => r.Team)
+                .Include(r => r.Categories)
+                .Include(r => r.Zawodnik)
+                .ToListAsync();
 
             var dtos = _mapper.Map<List<RobotsDto>>(robots);
 
@@ -39,108 +41,140 @@ namespace Projekcik.Controllers
         // GET: Robots/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
-            var robots = await _context.Roboty
+            var robot = await _context.Roboty
+                .Include(r => r.Team)
+                .Include(r => r.Categories)
+                .Include(r => r.Zawodnik) // Dodano include, żeby widzieć operatora w szczegółach
                 .FirstOrDefaultAsync(m => m.IdRobota == id);
-            if (robots == null)
-            {
-                return NotFound();
-            }
 
-            return View(robots);
+            if (robot == null) return NotFound();
+
+            return View(robot);
         }
 
         // GET: Robots/Create
         public IActionResult Create()
         {
+            // Używamy metody pomocniczej, żeby kod był czystszy
+            PopulateDropdowns();
             return View();
         }
 
         // POST: Robots/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("IdRobota,IdKategorii,NazwaRobota,IdDruzyny")] Robots robots)
+        public async Task<IActionResult> Create(RobotCreateDto dto)
         {
+            // 1. NAJPIERW sprawdzamy unikalność (zanim cokolwiek zaczniemy robić)
+            // Warto dodać .ToLower(), żeby nie dało się dodać "Robot" i "robot"
+            if (await _context.Roboty.AnyAsync(u => u.NazwaRobota == dto.NazwaRobota && u.IdKategorii == dto.IdKategorii))
+            {
+                ModelState.AddModelError("NazwaRobota", "Taki robot już istnieje w tej kategorii.");
+            }
+
+            // 2. TERAZ sprawdzamy IsValid (który zwróci false, jeśli powyższy if dodał błąd)
             if (ModelState.IsValid)
             {
-                _context.Add(robots);
+                var robot = new Robots
+                {
+                    NazwaRobota = dto.NazwaRobota,
+                    IdKategorii = dto.IdKategorii,
+                    IdDruzyny = dto.IdDruzyny,
+                    IdZawodnika = dto.IdZawodnika
+                };
+
+                _context.Add(robot);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(robots);
+
+            // 3. Jeśli ModelState NIE jest valid (bo duplikat albo inne błędy), wracamy do widoku
+            PopulateDropdowns(dto.IdDruzyny, dto.IdKategorii, dto.IdZawodnika);
+            return View(dto);
         }
 
         // GET: Robots/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
-            var robots = await _context.Roboty.FindAsync(id);
-            if (robots == null)
+            var robot = await _context.Roboty.FindAsync(id);
+            if (robot == null) return NotFound();
+
+            var dto = new RobotEditDto
             {
-                return NotFound();
-            }
-            return View(robots);
+                IdRobota = robot.IdRobota,
+                NazwaRobota = robot.NazwaRobota,
+                IdKategorii = robot.IdKategorii,
+                IdDruzyny = robot.IdDruzyny,
+                IdZawodnika = robot.IdZawodnika
+            };
+
+            // Ładujemy listy i zaznaczamy to, co jest aktualnie w bazie
+            PopulateDropdowns(robot.IdDruzyny, robot.IdKategorii, robot.IdZawodnika);
+
+            return View(dto);
         }
 
         // POST: Robots/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("IdRobota,IdKategorii,NazwaRobota,IdDruzyny")] Robots robots)
+        public async Task<IActionResult> Edit(int id, RobotEditDto dto)
         {
-            if (id != robots.IdRobota)
+            if (id != dto.IdRobota) return NotFound();
+
+            // 1. SPRAWDZANIE UNIKALNOŚCI (Z WYKLUCZENIEM SIEBIE)
+            // Sprawdzamy, czy istnieje robot o tej samej nazwie i kategorii...
+            // ...ALE o ID innym niż nasze (u.IdRobota != dto.IdRobota)
+            if (await _context.Roboty.AnyAsync(u =>
+                u.NazwaRobota.ToLower() == dto.NazwaRobota.ToLower() &&
+                u.IdKategorii == dto.IdKategorii &&
+                u.IdRobota != dto.IdRobota))
             {
-                return NotFound();
+                ModelState.AddModelError("NazwaRobota", "Taki robot już istnieje w tej kategorii.");
             }
 
+            // 2. WALIDACJA
             if (ModelState.IsValid)
             {
                 try
                 {
-                    _context.Update(robots);
+                    var robotToUpdate = await _context.Roboty.FindAsync(id);
+                    if (robotToUpdate == null) return NotFound();
+
+                    robotToUpdate.NazwaRobota = dto.NazwaRobota;
+                    robotToUpdate.IdKategorii = dto.IdKategorii;
+                    robotToUpdate.IdDruzyny = dto.IdDruzyny;
+                    robotToUpdate.IdZawodnika = dto.IdZawodnika;
+
+                    _context.Update(robotToUpdate);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!RobotsExists(robots.IdRobota))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    if (!RobotsExists(dto.IdRobota)) return NotFound();
+                    else throw;
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(robots);
+
+            // 3. Jeśli błąd -> odnawiamy listy
+            PopulateDropdowns(dto.IdDruzyny, dto.IdKategorii, dto.IdZawodnika);
+            return View(dto);
         }
 
         // GET: Robots/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
             var robots = await _context.Roboty
+                .Include(r => r.Team) // Warto widzieć nazwę drużyny przy usuwaniu
                 .FirstOrDefaultAsync(m => m.IdRobota == id);
-            if (robots == null)
-            {
-                return NotFound();
-            }
+
+            if (robots == null) return NotFound();
 
             return View(robots);
         }
@@ -163,6 +197,26 @@ namespace Projekcik.Controllers
         private bool RobotsExists(int id)
         {
             return _context.Roboty.Any(e => e.IdRobota == id);
+        }
+
+        // --- TO JEST TA BRAKUJĄCA METODA ---
+        private void PopulateDropdowns(int? selectedTeam = null, int? selectedCategory = null, int? selectedUser = null)
+        {
+            // 1. Kategorie
+            ViewBag.Kategorie = new SelectList(_context.Kategorie, "IdKategorii", "NazwaKategorii", selectedCategory);
+
+            // 2. Drużyny
+            ViewBag.Druzyny = new SelectList(_context.Druzyny, "IdDruzyny", "NazwaDruzyny", selectedTeam);
+
+            // 3. Zawodnicy (Operatorzy)
+            // Tworzymy listę anonimową z polami Id i PelnaNazwa
+            var users = _context.Zawodnicy.Select(u => new
+            {
+                Id = u.IdZawodnika,
+                PelnaNazwa = u.Imie + " " + u.Nazwisko
+            }).ToList();
+
+            ViewBag.Zawodnicy = new SelectList(users, "Id", "PelnaNazwa", selectedUser);
         }
     }
 }

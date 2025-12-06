@@ -1,59 +1,82 @@
 ﻿@model IEnumerable<Projekcik.application.Robots.RobotsDto>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Lista Robotów";
 }
 
-<h1>Index</h1>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Lista Robotów</h1>
+    <a asp-action="Create" class="btn btn-success">
+        <i class="bi bi-plus-circle"></i> Dodaj nowego robota
+    </a>
+</div>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.IdKategorii)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.NazwaRobota)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IdDruzyny)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.NazwaKategorii)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.NazwaDruzyny)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.IdKategorii)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.NazwaRobota)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IdDruzyny)
-            </td>
-            <td>
-                 @Html.DisplayFor(modelItem => item.NazwaKategorii)
-            </td>
-            <td>
-                 @Html.DisplayFor(modelItem => item.NazwaDruzyny)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.IdRobota">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.IdRobota">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.IdRobota">Delete</a>
-            </td>
-        </tr>
+<div class="card shadow-sm">
+    <div class="card-body p-0">
+        <table class="table table-striped table-hover mb-0">
+            <thead class="table-dark">
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.NazwaRobota)
+                    </th>
+                    <th>
+                        Kategoria
+                    </th>
+                    <th>
+                        Drużyna
+                    </th>
+                    <th>
+                        Operator
+                    </th>
+                    <th>Akcje</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td class="align-middle">
+                            <span class="fw-bold">@Html.DisplayFor(modelItem => item.NazwaRobota)</span>
+                        </td>
+                        <td class="align-middle">
+                            <span class="badge bg-primary">@item.NazwaKategorii</span>
+                        </td>
+                        <td class="align-middle">
+                            @Html.DisplayFor(modelItem => item.NazwaDruzyny)
+                        </td>
+                        <td class="align-middle">
+                            @if (item.NazwaOperatora == "Brak operatora")
+                            {
+                                <span class="text-muted text-small"><em>@item.NazwaOperatora</em></span>
+                            }
+                            else
+                            {
+                                <i class="bi bi-person-fill"></i> @item.NazwaOperatora
+                            }
+                        </td>
+                        <td class="text-end align-middle">
+                            <div class="btn-group" role="group">
+                                <a asp-action="Edit" asp-route-id="@item.IdRobota" class="btn btn-sm btn-warning text-white">
+                                    Edytuj
+                                </a>
+                                <a asp-action="Details" asp-route-id="@item.IdRobota" class="btn btn-sm btn-info text-white">
+                                    Szczegóły
+                                </a>
+                                <a asp-action="Delete" asp-route-id="@item.IdRobota" class="btn btn-sm btn-danger">
+                                    Usuń
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info mt-3 text-center">
+        Brak robotów w bazie danych. Dodaj pierwszego!
+    </div>
 }
-    </tbody>
-</table>

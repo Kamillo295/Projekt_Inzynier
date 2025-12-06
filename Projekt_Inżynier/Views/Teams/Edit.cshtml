@@ -1,39 +1,39 @@
-﻿@model Projekcik.Entities.Team
+﻿@model Projekcik.application.Teams.TeamEditDto
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Edycja Drużyny";
 }
 
-<h1>Edit</h1>
-
-<h4>Team</h4>
+<h1>Edycja Drużyny</h1>
 <hr />
 <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-6">
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="IdDruzyny" />
-            <div class="form-group">
-                <label asp-for="IdRobota" class="control-label"></label>
-                <input asp-for="IdRobota" class="form-control" />
-                <span asp-validation-for="IdRobota" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="NazwaDruzyny" class="control-label"></label>
+
+            <div class="form-group mb-3">
+                <label asp-for="NazwaDruzyny" class="control-label fw-bold"></label>
                 <input asp-for="NazwaDruzyny" class="form-control" />
                 <span asp-validation-for="NazwaDruzyny" class="text-danger"></span>
             </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="WybraneIdZawodnikow" class="control-label fw-bold">Członkowie drużyny</label>
+                <div class="alert alert-info py-1 px-2 mb-1">
+                    <small><i class="bi bi-info-circle"></i> Przytrzymaj <strong>Ctrl</strong>, aby zaznaczyć kilku zawodników.</small>
+                </div>
+
+                <select asp-for="WybraneIdZawodnikow" class="form-control" asp-items="ViewBag.Uzytkownicy" multiple style="min-height: 200px;">
+                </select>
+
+                <span asp-validation-for="WybraneIdZawodnikow" class="text-danger"></span>
+            </div>
+
             <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+                <input type="submit" value="Zapisz zmiany" class="btn btn-primary" />
+                <a asp-action="Index" class="btn btn-secondary">Powrót</a>
             </div>
         </form>
     </div>
 </div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}

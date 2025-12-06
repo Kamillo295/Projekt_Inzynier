@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Projekcik.Infrastructure.Persistance;
 
@@ -10,9 +11,11 @@ using Projekcik.Infrastructure.Persistance;
 namespace Projekcik.Migrations
 {
     [DbContext(typeof(AplicationDbContext))]
-    partial class AplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251206181712_TeamIDRob")]
+    partial class TeamIDRob
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -46,26 +49,32 @@ namespace Projekcik.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdRobota"));
 
+                    b.Property<int>("CategoriesIdKategorii")
+                        .HasColumnType("int");
+
                     b.Property<int>("IdDruzyny")
                         .HasColumnType("int");
 
                     b.Property<int>("IdKategorii")
                         .HasColumnType("int");
 
-                    b.Property<int>("IdZawodnika")
+                    b.Property<int?>("IdZawodnika")
                         .HasColumnType("int");
 
                     b.Property<string>("NazwaRobota")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("TeamIdDruzyny")
+                        .HasColumnType("int");
+
                     b.HasKey("IdRobota");
 
-                    b.HasIndex("IdDruzyny");
-
-                    b.HasIndex("IdKategorii");
+                    b.HasIndex("CategoriesIdKategorii");
 
                     b.HasIndex("IdZawodnika");
+
+                    b.HasIndex("TeamIdDruzyny");
 
                     b.ToTable("Roboty");
                 });
@@ -152,21 +161,19 @@ namespace Projekcik.Migrations
 
             modelBuilder.Entity("Projekcik.Entities.Robots", b =>
                 {
-                    b.HasOne("Projekcik.Entities.Team", "Team")
-                        .WithMany("Roboty")
-                        .HasForeignKey("IdDruzyny")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("Projekcik.Entities.Categories", "Categories")
                         .WithMany("Roboty")
-                        .HasForeignKey("IdKategorii")
+                        .HasForeignKey("CategoriesIdKategorii")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Projekcik.Entities.Users", "Zawodnik")
                         .WithMany()
-                        .HasForeignKey("IdZawodnika")
+                        .HasForeignKey("IdZawodnika");
+
+                    b.HasOne("Projekcik.Entities.Team", "Team")
+                        .WithMany("Roboty")
+                        .HasForeignKey("TeamIdDruzyny")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

@@ -1,43 +1,51 @@
-﻿@model Projekcik.Entities.Robots
+﻿@model Projekcik.application.Robots.RobotCreateDto
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Dodaj Robota";
 }
 
-<h1>Create</h1>
-
-<h4>Robots</h4>
+<h1>Dodaj nowego robota</h1>
 <hr />
+
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="IdKategorii" class="control-label"></label>
-                <input asp-for="IdKategorii" class="form-control" />
-                <span asp-validation-for="IdKategorii" class="text-danger"></span>
-            </div>
-            <div class="form-group">
+
+            <div class="form-group mb-3">
                 <label asp-for="NazwaRobota" class="control-label"></label>
                 <input asp-for="NazwaRobota" class="form-control" />
                 <span asp-validation-for="NazwaRobota" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="IdDruzyny" class="control-label"></label>
-                <input asp-for="IdDruzyny" class="form-control" />
+
+            <div class="form-group mb-3">
+                <label asp-for="IdKategorii" class="control-label">Kategoria</label>
+                <select asp-for="IdKategorii" class="form-control" asp-items="ViewBag.Kategorie">
+                    <option value="0">-- Wybierz kategorię --</option>
+                </select>
+                <span asp-validation-for="IdKategorii" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="IdDruzyny" class="control-label">Drużyna</label>
+                <select asp-for="IdDruzyny" class="form-control" asp-items="ViewBag.Druzyny">
+                    <option value="0">-- Wybierz drużynę --</option>
+                </select>
                 <span asp-validation-for="IdDruzyny" class="text-danger"></span>
             </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="IdZawodnika" class="control-label">Operator</label>
+                <select asp-for="IdZawodnika" class="form-control" asp-items="ViewBag.Zawodnicy">
+                    <option value="0">-- Wybierz operatora (Wymagane) --</option>
+                </select>
+                <span asp-validation-for="IdZawodnika" class="text-danger"></span>
+            </div>
+
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <input type="submit" value="Utwórz" class="btn btn-primary" />
+                <a asp-action="Index" class="btn btn-secondary">Powrót</a>
             </div>
         </form>
     </div>
 </div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}
