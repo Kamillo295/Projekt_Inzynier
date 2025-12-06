@@ -15,7 +15,6 @@ public class TeamMappingProfile : Profile
             // Bierzemy kolekcję Roboty -> wybieramy tylko Nazwę -> zamieniamy na Listę stringów
             .ForMember(dest => dest.NazwyRobotow, opt => opt.MapFrom(src => src.Roboty.Select(r => r.NazwaRobota).ToList()));
 
-        // Mapowanie w drugą stronę (Create/Edit) - zazwyczaj prostsze
         CreateMap<TeamDto, Team>()
             .ForMember(dest => dest.Zawodnicy, opt => opt.Ignore()) // Ignorujemy przy zapisie, bo zawodników dodaje się inaczej
             .ForMember(dest => dest.Roboty, opt => opt.Ignore());
