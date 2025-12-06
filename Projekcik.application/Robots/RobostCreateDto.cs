@@ -16,7 +16,6 @@ namespace Projekcik.application.Robots
         [Range(1, int.MaxValue, ErrorMessage = "Wybierz drużynę.")]
         public int IdDruzyny { get; set; }
 
-        // ZMIANA: Dodajemy walidację wymagalności
         [Display(Name = "Operator (Zawodnik)")]
         [Range(1, int.MaxValue, ErrorMessage = "Musisz przypisać operatora do robota!")]
         public int IdZawodnika { get; set; }

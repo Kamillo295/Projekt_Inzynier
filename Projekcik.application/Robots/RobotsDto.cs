@@ -15,7 +15,7 @@ namespace Projekcik.application.Robots
         public string NazwaKategorii { get; set; }
         public string NazwaDruzyny { get; set; }
 
-        // NOWOŚĆ: Imię i nazwisko operatora
+        // Imię i nazwisko operatora
         public string? NazwaOperatora { get; set; }
     }
 }
