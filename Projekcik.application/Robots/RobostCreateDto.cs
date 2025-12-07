@@ -9,7 +9,7 @@ namespace Projekcik.application.Robots
         public string NazwaRobota { get; set; } = default!;
 
         [Display(Name = "Kategoria")]
-        [Range(1, int.MaxValue, ErrorMessage = "Wybierz kategorię.")]
+        [Range(1, int.MaxValue, ErrorMessage = "Wybierz kategorię.")]   //inaczej wywala błąd jak nic się nie wpisze
         public int IdKategorii { get; set; }
 
         [Display(Name = "Drużyna")]

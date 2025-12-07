@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema; // <--- Dodaj ten using
-
+using System.ComponentModel.DataAnnotations.Schema;
 namespace Projekcik.Entities
 {
     public class Robots
@@ -11,13 +10,11 @@ namespace Projekcik.Entities
         // --- KATEGORIA ---
         public int IdKategorii { get; set; }
 
-        [ForeignKey("IdKategorii")] // Dobra praktyka: dodaj też tutaj
+        [ForeignKey("IdKategorii")]
         public Categories Categories { get; set; }
 
-        // --- DRUŻYNA (TU JEST PROBLEM) ---
         public int IdDruzyny { get; set; }
 
-        // DODAJ TĘ LINIJKĘ PONIŻEJ:
         [ForeignKey("IdDruzyny")]
         public Team Team { get; set; }
 

@@ -57,7 +57,6 @@ namespace Projekcik.Controllers
         // GET: Robots/Create
         public IActionResult Create()
         {
-            // Używamy metody pomocniczej, żeby kod był czystszy
             PopulateDropdowns();
             return View();
         }
@@ -67,8 +66,6 @@ namespace Projekcik.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(RobotCreateDto dto)
         {
-            // 1. NAJPIERW sprawdzamy unikalność (zanim cokolwiek zaczniemy robić)
-            // Warto dodać .ToLower(), żeby nie dało się dodać "Robot" i "robot"
             if (await _context.Roboty.AnyAsync(u => u.NazwaRobota == dto.NazwaRobota && u.IdKategorii == dto.IdKategorii))
             {
                 ModelState.AddModelError("NazwaRobota", "Taki robot już istnieje w tej kategorii.");
@@ -126,12 +123,7 @@ namespace Projekcik.Controllers
             if (id != dto.IdRobota) return NotFound();
 
             // 1. SPRAWDZANIE UNIKALNOŚCI (Z WYKLUCZENIEM SIEBIE)
-            // Sprawdzamy, czy istnieje robot o tej samej nazwie i kategorii...
-            // ...ALE o ID innym niż nasze (u.IdRobota != dto.IdRobota)
-            if (await _context.Roboty.AnyAsync(u =>
-                u.NazwaRobota.ToLower() == dto.NazwaRobota.ToLower() &&
-                u.IdKategorii == dto.IdKategorii &&
-                u.IdRobota != dto.IdRobota))
+            if (await _context.Roboty.AnyAsync(u => u.NazwaRobota== dto.NazwaRobota && u.IdKategorii == dto.IdKategorii && u.IdRobota != dto.IdRobota))
             {
                 ModelState.AddModelError("NazwaRobota", "Taki robot już istnieje w tej kategorii.");
             }

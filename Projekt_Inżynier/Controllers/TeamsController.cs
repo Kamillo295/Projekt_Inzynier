@@ -28,11 +28,10 @@ namespace Projekcik.Controllers
         public async Task<IActionResult> Index()
         {
             var teams = await _context.Druzyny
-                .Include(t => t.Zawodnicy) // Załaduj listę zawodników
-                .Include(t => t.Roboty)    // Załaduj listę robotów
+                .Include(t => t.Zawodnicy) 
+                .Include(t => t.Roboty)    
                 .ToListAsync();
 
-            // AutoMapper przeliczy .Count i zamieni roboty na nazwy
             var teamDtos = _mapper.Map<List<TeamDto>>(teams);
 
             return View(teamDtos);
@@ -92,34 +91,26 @@ namespace Projekcik.Controllers
             return View(team);
         }
         // GET: Teams/Edit/5
+        // GET: Teams/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null) return NotFound();
 
-            // 1. Pobieramy drużynę razem z jej OBECNYMI zawodnikami
             var team = await _context.Druzyny
-                .Include(t => t.Zawodnicy) // <--- KLUCZOWE: Musimy wiedzieć, kto już tam jest
+                .Include(t => t.Zawodnicy)
                 .FirstOrDefaultAsync(m => m.IdDruzyny == id);
 
             if (team == null) return NotFound();
 
-            // 2. Tworzymy DTO i zaznaczamy obecnych członków
             var dto = new Projekcik.application.Teams.TeamEditDto
             {
                 IdDruzyny = team.IdDruzyny,
                 NazwaDruzyny = team.NazwaDruzyny,
-                // Pobieramy same ID obecnych zawodników
                 WybraneIdZawodnikow = team.Zawodnicy.Select(u => u.IdZawodnika).ToList()
             };
 
-            // 3. TWORZYMY LISTĘ WSZYSTKICH UŻYTKOWNIKÓW Z BAZY
-            // To tutaj realizujemy Twój wymóg: "lista już utworzonych użytkowników"
-            var wszyscyUzytkownicy = _context.Zawodnicy
-                .Select(u => new { Id = u.IdZawodnika, PelnaNazwa = u.Imie + " " + u.Nazwisko })
-                .ToList();
-
-            // MultiSelectList(Źródło, "Wartość", "Tekst", "CoMaByćZaznaczone")
-            ViewBag.Uzytkownicy = new MultiSelectList(wszyscyUzytkownicy, "Id", "PelnaNazwa", dto.WybraneIdZawodnikow);
+            // Ładujemy dane do checkboxów
+            await PopulateUsersListData(dto);
 
             return View(dto);
         }
@@ -133,30 +124,29 @@ namespace Projekcik.Controllers
 
             if (ModelState.IsValid)
             {
-                // 1. Pobieramy edytowaną drużynę z bazy (z relacjami!)
                 var teamToUpdate = await _context.Druzyny
                     .Include(t => t.Zawodnicy)
                     .FirstOrDefaultAsync(t => t.IdDruzyny == id);
 
                 if (teamToUpdate == null) return NotFound();
 
-                // 2. Aktualizujemy zwykłe pola
                 teamToUpdate.NazwaDruzyny = dto.NazwaDruzyny;
 
-                // 3. AKTUALIZACJA CZŁONKÓW DRUŻYNY
-                // Najprostsza metoda: wyczyść starych i dodaj zaznaczonych na nowo
+                // --- AKTUALIZACJA ZAWODNIKÓW (WERSJA ZOPTYMALIZOWANA) ---
+                // 1. Czyścimy obecnych
                 teamToUpdate.Zawodnicy.Clear();
 
-                if (dto.WybraneIdZawodnikow != null)
+                // 2. Pobieramy wszystkich wybranych jednym szybkim zapytaniem SQL
+                if (dto.WybraneIdZawodnikow != null && dto.WybraneIdZawodnikow.Any())
                 {
-                    foreach (var userId in dto.WybraneIdZawodnikow)
+                    var selectedUsers = await _context.Zawodnicy
+                        .Where(u => dto.WybraneIdZawodnikow.Contains(u.IdZawodnika))
+                        .ToListAsync();
+
+                    // 3. Dodajemy ich do drużyny
+                    foreach (var user in selectedUsers)
                     {
-                        // Szukamy użytkownika w bazie i dodajemy do drużyny
-                        var user = await _context.Zawodnicy.FindAsync(userId);
-                        if (user != null)
-                        {
-                            teamToUpdate.Zawodnicy.Add(user);
-                        }
+                        teamToUpdate.Zawodnicy.Add(user);
                     }
                 }
 
@@ -164,12 +154,8 @@ namespace Projekcik.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            // Jeśli walidacja nie przejdzie, musimy odnowić listę (ViewBag znika)
-            var wszyscy = _context.Zawodnicy
-                .Select(u => new { Id = u.IdZawodnika, PelnaNazwa = u.Imie + " " + u.Nazwisko })
-                .ToList();
-            ViewBag.Uzytkownicy = new MultiSelectList(wszyscy, "Id", "PelnaNazwa", dto.WybraneIdZawodnikow);
-
+            // Jeśli błąd walidacji - załaduj listę ponownie
+            await PopulateUsersListData(dto);
             return View(dto);
         }
 
@@ -210,5 +196,21 @@ namespace Projekcik.Controllers
         {
             return _context.Druzyny.Any(e => e.IdDruzyny == id);
         }
+
+        // --- METODA POMOCNICZA (Żeby nie powtarzać kodu) ---
+        private async Task PopulateUsersListData(Projekcik.application.Teams.TeamEditDto dto)
+        {
+            var wszyscy = await _context.Zawodnicy
+                .Select(u => new
+                {
+                    Id = u.IdZawodnika,
+                    PelnaNazwa = u.Imie + " " + u.Nazwisko
+                })
+                .ToListAsync();
+
+            // Używamy MultiSelectList, bo łatwo sprawdzi, co zaznaczyć
+            ViewBag.Uzytkownicy = new MultiSelectList(wszyscy, "Id", "PelnaNazwa", dto.WybraneIdZawodnikow);
+        }
     }
+
 }

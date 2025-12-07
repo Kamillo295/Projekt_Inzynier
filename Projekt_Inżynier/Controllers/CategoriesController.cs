@@ -26,9 +26,9 @@ namespace Projekcik.Controllers
         // GET: Categories
         public async Task<IActionResult> Index()
         {
-            // 1. Pobieramy kategorie WRAZ z robotami (Eager Loading)
+            // 1. Pobieramy kategorie WRAZ z robotami
             var categories = await _context.Kategorie
-                .Include(c => c.Roboty) // <--- KLUCZOWE! Bez tego Count = 0
+                .Include(c => c.Roboty)
                 .ToListAsync();
 
             // 2. AutoMapper przelicza dane na DTO
