@@ -57,7 +57,7 @@ namespace Projekcik.Controllers
         // GET: Robots/Create
         public IActionResult Create()
         {
-            PopulateDropdowns();
+            WyborZListy();
             return View();
         }
 
@@ -88,7 +88,7 @@ namespace Projekcik.Controllers
             }
 
             // 3. Jeśli ModelState NIE jest valid (bo duplikat albo inne błędy), wracamy do widoku
-            PopulateDropdowns(dto.IdDruzyny, dto.IdKategorii, dto.IdZawodnika);
+            WyborZListy();
             return View(dto);
         }
 
@@ -110,7 +110,7 @@ namespace Projekcik.Controllers
             };
 
             // Ładujemy listy i zaznaczamy to, co jest aktualnie w bazie
-            PopulateDropdowns(robot.IdDruzyny, robot.IdKategorii, robot.IdZawodnika);
+            WyborZListy();
 
             return View(dto);
         }
@@ -153,7 +153,7 @@ namespace Projekcik.Controllers
             }
 
             // 3. Jeśli błąd -> odnawiamy listy
-            PopulateDropdowns(dto.IdDruzyny, dto.IdKategorii, dto.IdZawodnika);
+            WyborZListy();
             return View(dto);
         }
 
@@ -191,24 +191,22 @@ namespace Projekcik.Controllers
             return _context.Roboty.Any(e => e.IdRobota == id);
         }
 
-        // --- TO JEST TA BRAKUJĄCA METODA ---
-        private void PopulateDropdowns(int? selectedTeam = null, int? selectedCategory = null, int? selectedUser = null)
+        private void WyborZListy()
         {
-            // 1. Kategorie
-            ViewBag.Kategorie = new SelectList(_context.Kategorie, "IdKategorii", "NazwaKategorii", selectedCategory);
+            // Kategorie
+            ViewBag.Kategorie = new SelectList(_context.Kategorie, "IdKategorii", "NazwaKategorii");
 
-            // 2. Drużyny
-            ViewBag.Druzyny = new SelectList(_context.Druzyny, "IdDruzyny", "NazwaDruzyny", selectedTeam);
+            // Drużyny
+            ViewBag.Druzyny = new SelectList(_context.Druzyny, "IdDruzyny", "NazwaDruzyny");
 
-            // 3. Zawodnicy (Operatorzy)
-            // Tworzymy listę anonimową z polami Id i PelnaNazwa
+            // Zawodnicy
             var users = _context.Zawodnicy.Select(u => new
             {
                 Id = u.IdZawodnika,
                 PelnaNazwa = u.Imie + " " + u.Nazwisko
             }).ToList();
 
-            ViewBag.Zawodnicy = new SelectList(users, "Id", "PelnaNazwa", selectedUser);
+            ViewBag.Zawodnicy = new SelectList(users, "Id", "PelnaNazwa");
         }
     }
 }
