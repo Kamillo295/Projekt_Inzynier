@@ -1,4 +1,4 @@
-﻿using System.Linq; // Ważne dla .Select()
+﻿using System.Linq;
 using AutoMapper;
 using Projekcik.Entities;
 using Projekcik.application.Teams;

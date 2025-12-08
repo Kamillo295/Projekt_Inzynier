@@ -40,19 +40,27 @@ namespace Projekcik.Controllers
         // GET: Categories/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
-            var categories = await _context.Kategorie
+            var categ = await _context.Kategorie
+                .Include(t => t.Roboty)     // Pobierz listę robotów
                 .FirstOrDefaultAsync(m => m.IdKategorii == id);
-            if (categories == null)
-            {
-                return NotFound();
-            }
 
-            return View(categories);
+            if (categ == null) return NotFound();
+
+            // Mapowanie na DTO (ręczne dla czytelności, można też użyć AutoMappera)
+            var dto = new Projekcik.application.Categories.CategoriesDetailsDto
+            {
+                IdKategorii = categ.IdKategorii,
+                NazwaKategorii = categ.NazwaKategorii,
+
+                // Zamieniamy listę obiektów Robots na listę nazw robotów
+                Roboty = categ.Roboty
+                    .Select(r => r.NazwaRobota)
+                    .ToList()
+            };
+
+            return View(dto);
         }
 
         // GET: Categories/Create
