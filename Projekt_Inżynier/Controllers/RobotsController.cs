@@ -57,8 +57,7 @@ namespace Projekcik.Controllers
         // GET: Robots/Create
         public IActionResult Create()
         {
-            // Używamy metody pomocniczej, żeby kod był czystszy
-            PopulateDropdowns();
+            WyborZListy();
             return View();
         }
 
@@ -67,8 +66,6 @@ namespace Projekcik.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(RobotCreateDto dto)
         {
-            // 1. NAJPIERW sprawdzamy unikalność (zanim cokolwiek zaczniemy robić)
-            // Warto dodać .ToLower(), żeby nie dało się dodać "Robot" i "robot"
             if (await _context.Roboty.AnyAsync(u => u.NazwaRobota == dto.NazwaRobota && u.IdKategorii == dto.IdKategorii))
             {
                 ModelState.AddModelError("NazwaRobota", "Taki robot już istnieje w tej kategorii.");
@@ -91,7 +88,7 @@ namespace Projekcik.Controllers
             }
 
             // 3. Jeśli ModelState NIE jest valid (bo duplikat albo inne błędy), wracamy do widoku
-            PopulateDropdowns(dto.IdDruzyny, dto.IdKategorii, dto.IdZawodnika);
+            WyborZListy();
             return View(dto);
         }
 
@@ -113,7 +110,7 @@ namespace Projekcik.Controllers
             };
 
             // Ładujemy listy i zaznaczamy to, co jest aktualnie w bazie
-            PopulateDropdowns(robot.IdDruzyny, robot.IdKategorii, robot.IdZawodnika);
+            WyborZListy();
 
             return View(dto);
         }
@@ -126,12 +123,7 @@ namespace Projekcik.Controllers
             if (id != dto.IdRobota) return NotFound();
 
             // 1. SPRAWDZANIE UNIKALNOŚCI (Z WYKLUCZENIEM SIEBIE)
-            // Sprawdzamy, czy istnieje robot o tej samej nazwie i kategorii...
-            // ...ALE o ID innym niż nasze (u.IdRobota != dto.IdRobota)
-            if (await _context.Roboty.AnyAsync(u =>
-                u.NazwaRobota.ToLower() == dto.NazwaRobota.ToLower() &&
-                u.IdKategorii == dto.IdKategorii &&
-                u.IdRobota != dto.IdRobota))
+            if (await _context.Roboty.AnyAsync(u => u.NazwaRobota== dto.NazwaRobota && u.IdKategorii == dto.IdKategorii && u.IdRobota != dto.IdRobota))
             {
                 ModelState.AddModelError("NazwaRobota", "Taki robot już istnieje w tej kategorii.");
             }
@@ -161,7 +153,7 @@ namespace Projekcik.Controllers
             }
 
             // 3. Jeśli błąd -> odnawiamy listy
-            PopulateDropdowns(dto.IdDruzyny, dto.IdKategorii, dto.IdZawodnika);
+            WyborZListy();
             return View(dto);
         }
 
@@ -199,24 +191,22 @@ namespace Projekcik.Controllers
             return _context.Roboty.Any(e => e.IdRobota == id);
         }
 
-        // --- TO JEST TA BRAKUJĄCA METODA ---
-        private void PopulateDropdowns(int? selectedTeam = null, int? selectedCategory = null, int? selectedUser = null)
+        private void WyborZListy()
         {
-            // 1. Kategorie
-            ViewBag.Kategorie = new SelectList(_context.Kategorie, "IdKategorii", "NazwaKategorii", selectedCategory);
+            // Kategorie
+            ViewBag.Kategorie = new SelectList(_context.Kategorie, "IdKategorii", "NazwaKategorii");
 
-            // 2. Drużyny
-            ViewBag.Druzyny = new SelectList(_context.Druzyny, "IdDruzyny", "NazwaDruzyny", selectedTeam);
+            // Drużyny
+            ViewBag.Druzyny = new SelectList(_context.Druzyny, "IdDruzyny", "NazwaDruzyny");
 
-            // 3. Zawodnicy (Operatorzy)
-            // Tworzymy listę anonimową z polami Id i PelnaNazwa
+            // Zawodnicy
             var users = _context.Zawodnicy.Select(u => new
             {
                 Id = u.IdZawodnika,
                 PelnaNazwa = u.Imie + " " + u.Nazwisko
             }).ToList();
 
-            ViewBag.Zawodnicy = new SelectList(users, "Id", "PelnaNazwa", selectedUser);
+            ViewBag.Zawodnicy = new SelectList(users, "Id", "PelnaNazwa");
         }
     }
 }

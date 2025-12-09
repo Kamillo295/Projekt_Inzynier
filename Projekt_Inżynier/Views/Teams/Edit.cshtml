@@ -2,38 +2,53 @@
 
 @{
     ViewData["Title"] = "Edycja Drużyny";
+    // Rzutowanie na MultiSelectList
+    var usersList = (MultiSelectList)ViewBag.Uzytkownicy;
 }
 
-<h1>Edycja Drużyny</h1>
-<hr />
-<div class="row">
-    <div class="col-md-6">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="IdDruzyny" />
+<div class="container mt-3">
+    <h3>Edytuj Drużynę</h3>
+    <hr />
 
-            <div class="form-group mb-3">
-                <label asp-for="NazwaDruzyny" class="control-label fw-bold"></label>
-                <input asp-for="NazwaDruzyny" class="form-control" />
-                <span asp-validation-for="NazwaDruzyny" class="text-danger"></span>
+    <form asp-action="Edit">
+        <input type="hidden" asp-for="IdDruzyny" />
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+        <div class="form-group mb-4">
+            <label asp-for="NazwaDruzyny" class="form-label fw-bold">Nazwa Drużyny</label>
+            <input asp-for="NazwaDruzyny" class="form-control form-control-lg" />
+            <span asp-validation-for="NazwaDruzyny" class="text-danger"></span>
+        </div>
+
+        <div class="form-group mb-4">
+            <label class="form-label fw-bold mb-2">Skład drużyny:</label>
+
+            <div class="list-group" style="max-height: 400px; overflow-y: auto;">
+                @foreach (var item in usersList)
+                {
+                    bool isSelected = item.Selected;
+
+                    <label class="list-group-item list-group-item-action d-flex gap-3 align-items-center" style="cursor: pointer;">
+
+                        <input class="form-check-input flex-shrink-0"
+                               type="checkbox"
+                               name="WybraneIdZawodnikow"
+                               value="@item.Value"
+                        @(isSelected ? "checked" : "")
+                               style="font-size: 1.3em;">
+
+                        <span class="pt-1 form-checked-content fs-5">
+                            @item.Text
+                        </span>
+                    </label>
+                }
             </div>
+            <small class="text-muted mt-2 d-block">Kliknij wiersz, aby dodać lub usunąć zawodnika.</small>
+        </div>
 
-            <div class="form-group mb-3">
-                <label asp-for="WybraneIdZawodnikow" class="control-label fw-bold">Członkowie drużyny</label>
-                <div class="alert alert-info py-1 px-2 mb-1">
-                    <small><i class="bi bi-info-circle"></i> Przytrzymaj <strong>Ctrl</strong>, aby zaznaczyć kilku zawodników.</small>
-                </div>
-
-                <select asp-for="WybraneIdZawodnikow" class="form-control" asp-items="ViewBag.Uzytkownicy" multiple style="min-height: 200px;">
-                </select>
-
-                <span asp-validation-for="WybraneIdZawodnikow" class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
-                <input type="submit" value="Zapisz zmiany" class="btn btn-primary" />
-                <a asp-action="Index" class="btn btn-secondary">Powrót</a>
-            </div>
-        </form>
-    </div>
+        <div class="d-grid gap-2 mb-5">
+            <button type="submit" class="btn btn-primary btn-lg py-3">Zapisz zmiany</button>
+            <a asp-action="Index" class="btn btn-outline-secondary btn-lg">Anuluj</a>
+        </div>
+    </form>
 </div>

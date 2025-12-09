@@ -42,7 +42,12 @@ namespace Projekcik.Controllers
         {
             if (id == null) return NotFound();
 
-            var user = await _dbContext.Zawodnicy.FirstOrDefaultAsync(m => m.IdZawodnika == id);
+            var user = await _dbContext.Zawodnicy
+                .Include(t => t.Druzyny)  // Pobierz listę zawodników
+               // .Include(t => t.Robot)     // Pobierz listę robotów
+                .FirstOrDefaultAsync(m => m.IdZawodnika == id);
+
+
             return user == null ? NotFound() : View(user);
         }
 

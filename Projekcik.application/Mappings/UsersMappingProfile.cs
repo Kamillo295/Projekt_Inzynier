@@ -8,10 +8,9 @@ namespace Projekcik.Application.Mappings
     {
         public MappingProfile()
         {
-            // Twoje stare mapowanie (UsersDto)
             CreateMap<Users, UsersDto>().ReverseMap();
 
-            // NOWE mapowanie (UserEditDto) - to naprawia Twój błąd!
+            // W obie strony
             CreateMap<Users, UserEditDto>().ReverseMap();
         }
     }

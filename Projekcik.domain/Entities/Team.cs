@@ -6,6 +6,7 @@ namespace Projekcik.Entities
     {
         [Key] public int IdDruzyny { get; set; } = default;
         //public int IdZawodnika { get; set; } = default;
+        [Display(Name = "Nazwa Drużyny")]
         public string NazwaDruzyny { get; set; } = default;
 
         public ICollection<Users> Zawodnicy { get; set; } = new List<Users>();

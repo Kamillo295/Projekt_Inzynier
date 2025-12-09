@@ -22,9 +22,9 @@
                     <th style="width: 15%">
                         Liczba Robotów
                     </th>
-                    <th>
+@*                     <th>
                         Przykładowe Roboty
-                    </th>
+                    </th> *@
                     <th class="text-end" style="width: 25%">Akcje</th>
                 </tr>
             </thead>
@@ -44,7 +44,7 @@
                             {
                                 <span class="badge bg-secondary rounded-pill">0</span>
                             }
-                        </td>
+                      @*   </td>
                         <td class="align-middle text-muted">
                             @if (item.NazwyRobotow != null && item.NazwyRobotow.Any())
                             {
@@ -54,7 +54,7 @@
                             {
                                 <small><em>Brak robotów w tej kategorii</em></small>
                             }
-                        </td>
+                        </td> *@
                         <td class="text-end align-middle">
                             <div class="btn-group" role="group">
                                 <a asp-action="Edit" asp-route-id="@item.IdKategorii" class="btn btn-sm btn-outline-primary">

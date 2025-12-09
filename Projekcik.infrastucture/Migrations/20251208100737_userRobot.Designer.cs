@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Projekcik.Infrastructure.Persistance;
 
@@ -10,9 +11,11 @@ using Projekcik.Infrastructure.Persistance;
 namespace Projekcik.Migrations
 {
     [DbContext(typeof(AplicationDbContext))]
-    partial class AplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251208100737_userRobot")]
+    partial class userRobot
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -36,35 +39,6 @@ namespace Projekcik.Migrations
                     b.HasKey("IdKategorii");
 
                     b.ToTable("Kategorie");
-                });
-
-            modelBuilder.Entity("Projekcik.Entities.Games", b =>
-                {
-                    b.Property<int>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
-
-                    b.Property<int>("Robot1ID")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Robot2ID")
-                        .HasColumnType("int");
-
-                    b.Property<int>("StopienDrabinki")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Zwyciezca")
-                        .HasColumnType("int");
-
-                    b.HasKey("ID");
-
-                    b.HasIndex("Robot1ID");
-
-                    b.HasIndex("Robot2ID");
-
-                    b.ToTable("Gry");
                 });
 
             modelBuilder.Entity("Projekcik.Entities.Robots", b =>
@@ -182,25 +156,6 @@ namespace Projekcik.Migrations
                     b.HasIndex("ZawodnicyIdZawodnika");
 
                     b.ToTable("TeamUsers");
-                });
-
-            modelBuilder.Entity("Projekcik.Entities.Games", b =>
-                {
-                    b.HasOne("Projekcik.Entities.Robots", "Robot1")
-                        .WithMany()
-                        .HasForeignKey("Robot1ID")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("Projekcik.Entities.Robots", "Robot2")
-                        .WithMany()
-                        .HasForeignKey("Robot2ID")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Robot1");
-
-                    b.Navigation("Robot2");
                 });
 
             modelBuilder.Entity("Projekcik.Entities.Robots", b =>
