@@ -1,0 +1,93 @@
+﻿@model Projekcik.Models.BracketViewModel
+
+@{
+    ViewData["Title"] = "Drabinka turniejowa";
+}
+
+<h2>Drabinka turniejowa</h2>
+
+<div class="bracket">
+    <div class="round">
+        @foreach (var match in Model.Matches.Where(m => m.StopienDrabinki == 1))
+        {
+            <div class="match-container">
+                <div class="match">
+                    <span>@match.Robot1?.NazwaRobota ?? "Brak"</span>
+                    <span>vs</span>
+                    <span>@match.Robot2?.NazwaRobota ?? "Brak"</span>
+                </div>
+
+                <div class="connector">
+                    <div class="line vertical"></div>
+                    <div class="line horizontal"></div>
+                </div>
+            </div>
+        }
+    </div>
+
+    <!-- Tu później wstawisz kolejną rundę -->
+    <div class="round next-round">
+        <!-- Na razie pusta kolumna -->
+    </div>
+</div>
+
+
+<a class="btn btn-secondary" asp-action="Index">Powrót do listy meczów</a>
+
+<style>
+    .bracket {
+        display: flex;
+        gap: 40px;
+        align-items: center;
+    }
+
+    /* Kolumna rundy */
+    .round {
+        display: flex;
+        flex-direction: column;
+        gap: 40px;
+    }
+
+    /* Pojedynczy mecz */
+    .match-container {
+        position: relative;
+        display: flex;
+        align-items: center;
+        gap: 20px;
+    }
+
+    .match {
+        background: #f3f3f3;
+        border: 2px solid #ccc;
+        padding: 10px 15px;
+        border-radius: 12px;
+        min-width: 160px;
+        text-align: center;
+        font-weight: 600;
+    }
+
+    /* Połączenia — ta magia drabinkowa */
+    .connector {
+        position: relative;
+        height: 40px;
+    }
+
+    .line {
+        background: #777;
+        position: absolute;
+    }
+
+        .line.vertical {
+            width: 2px;
+            height: 100%;
+            left: 0;
+        }
+
+        .line.horizontal {
+            width: 40px;
+            height: 2px;
+            left: 0;
+            top: 50%;
+        }
+
+</style>
